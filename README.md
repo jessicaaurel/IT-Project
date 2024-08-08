@@ -14,12 +14,12 @@
     {
       "name": "Nelson Nugroho",
       "email": "nnugroho@student.unimelb.edu.au",
-      "github": "nnugroho"
+      "github": "nelsonnugroho20"
     },
     {
       "name": "Revelino Edrensya Aldrin",
       "email": "raldrin@student.unimelb.edu.au",
-      "github": "revaldrin"
+      "github": "RevAldrin"
     },
     {
       "name": "Reagen Purnama",
