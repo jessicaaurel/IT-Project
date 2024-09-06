@@ -1,6 +1,6 @@
 import os
 
-os.chdir('/Users/usmanlannygmail.com/Documents/GitHub/IT-Project/c-lara')  # cd to the directory above the one where you've put the Tic-Tac-Toe dir
+os.chdir('/Users/macbookpro/Documents/GitHub/IT-Project/c-lara')  # cd to the directory above the one where you've put the Tic-Tac-Toe dir
 
 import tictactoe.tictactoe_game # Import the file with the game function
 

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        position: relative;
+      }
+
+      h1 {
+        position: absolute;
+        top: 20px; /* Move it to the top of the screen */
+        left: 50%;
+        transform: translateX(-50%); /* Center the text horizontally */
+        font-size: 2em;
+        text-align: center;
+        margin: 0;
+      }
+
+      .profile-container {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        text-align: center; /* Center the text below the image */
+      }
+
+      .profile-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: block; /* Block display to ensure the username is below */
+        margin-bottom: 5px; /* Add some spacing between image and username */
+      }
+
+      .username {
+        font-size: 0.9em;
+      }
+
+      .tictactoe-image {
+        width: 300px;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="profile-container">
+      <img
+        src="/Users/macbookpro/Documents/GitHub/IT-Project/c-lara/accounts/images/profile.png"
+        alt="Profile Image"
+        class="profile-image"
+      />
+      <!-- Username below profile image -->
+      <p class="username">{{ user.username }}</p>
+    </div>
+
+    <h1>TicTacToe</h1>
+
+    <img
+      src="/images/tictactoe.png"
+      alt="TicTacToe Image"
+      class="tictactoe-image"
+    />
+  </body>
+</html>
