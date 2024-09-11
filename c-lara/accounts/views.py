@@ -45,3 +45,20 @@ def register_view(request):
 
 def option_view(request):
     return render (request, 'option.html')
+
+def leaderboard_view(request):
+    # Dummy AI performance data for the leaderboard
+    ai_performance = [
+        {'name': 'AI Alpha', 'wins': 25, 'losses': 5},
+        {'name': 'AI Beta', 'wins': 20, 'losses': 10},
+        {'name': 'AI Gamma', 'wins': 15, 'losses': 15},
+        {'name': 'AI Delta', 'wins': 10, 'losses': 20},
+        {'name': 'AI Epsilon', 'wins': 5, 'losses': 25},
+    ]
+
+    # Sort AI based on wins (or any other criteria later)
+    ai_performance_sorted = sorted(ai_performance, key=lambda x: x['wins'], reverse=True)
+
+    return render(request, 'leaderboard.html', {'ai_performance': ai_performance_sorted})
+
+
