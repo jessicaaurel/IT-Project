@@ -39,6 +39,7 @@
         border-radius: 50%;
         display: block;
         margin-bottom: 5px;
+        cursor: pointer; /* Make it clear that the image is clickable */
       }
 
       .username {
@@ -48,6 +49,7 @@
       .tictactoe-container {
         position: relative;
         cursor: pointer;
+        text-align: center;
       }
 
       .tictactoe-image {
@@ -55,31 +57,49 @@
         height: auto;
       }
 
+      /* Initially show X in black */
       .x-mark {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         font-size: 5em;
-        color: black; /* Change the color to black */
+        color: black; /* Initially black */
         font-weight: bold;
-        display: none; /* Initially hidden */
+      }
+
+      /* Change X color to red when clicked */
+      .x-mark.clicked {
+        color: red;
+      }
+
+      /* Add small text below X */
+      .click-to-play {
+        position: absolute;
+        top: 65%; /* Adjust this to change the spacing between X and the text */
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1em;
+        color: grey;
       }
     </style>
   </head>
   <body>
     <div class="profile-container">
-      <img
-        src="{% static 'images/profile.png' %}"
-        alt="Profile Image"
-        class="profile-image"
-      />
+      <!-- Wrap the profile image in a clickable link -->
+      <a href="/profile-page">
+        <img
+          src="{% static 'images/profile.png' %}"
+          alt="Profile Image"
+          class="profile-image"
+        />
+      </a>
       <p class="username">{{ user.username }}</p>
     </div>
 
     <h1>TicTacToe</h1>
 
-    <!-- Container for the TicTacToe image and "X" mark -->
+    <!-- Container for the TicTacToe image, "X" mark, and the small text -->
     <div class="tictactoe-container" onclick="showX()">
       <img
         src="{% static 'images/tictactoe.png' %}"
@@ -88,12 +108,17 @@
       />
       <!-- The X mark that will appear in the middle -->
       <div class="x-mark" id="xMark">X</div>
+      <!-- Small text below the X -->
+      <div class="click-to-play" id="clickToPlay">Click to play</div>
     </div>
 
     <script>
       function showX() {
-        // Display the "X" mark in the middle of the image
-        document.getElementById("xMark").style.display = "block";
+        // Change the X color to red
+        document.getElementById("xMark").classList.add("clicked");
+
+        // Optionally, you can hide the "Click to play" text once clicked
+        document.getElementById("clickToPlay").style.display = "none";
 
         // Redirect to the next page after a delay (e.g., 1 second)
         setTimeout(function () {
