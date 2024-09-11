@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        position: relative;
+      }
+
+      h1 {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 2em;
+        text-align: center;
+        margin: 0;
+      }
+
+      .profile-container {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        text-align: center;
+      }
+
+      .profile-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .username {
+        font-size: 0.9em;
+      }
+
+      .tictactoe-container {
+        position: relative;
+        cursor: pointer;
+      }
+
+      .tictactoe-image {
+        width: 500px;
+        height: auto;
+      }
+
+      .x-mark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 5em;
+        color: black; /* Change the color to black */
+        font-weight: bold;
+        display: none; /* Initially hidden */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="profile-container">
+      <img
+        src="{% static 'images/profile.png' %}"
+        alt="Profile Image"
+        class="profile-image"
+      />
+      <p class="username">{{ user.username }}</p>
+    </div>
+
+    <h1>TicTacToe</h1>
+
+    <!-- Container for the TicTacToe image and "X" mark -->
+    <div class="tictactoe-container" onclick="showX()">
+      <img
+        src="{% static 'images/tictactoe.png' %}"
+        alt="TicTacToe Image"
+        class="tictactoe-image"
+      />
+      <!-- The X mark that will appear in the middle -->
+      <div class="x-mark" id="xMark">X</div>
+    </div>
+
+    <script>
+      function showX() {
+        // Display the "X" mark in the middle of the image
+        document.getElementById("xMark").style.display = "block";
+
+        // Redirect to the next page after a delay (e.g., 1 second)
+        setTimeout(function () {
+          window.location.href = "/next-page"; // Update with your next page URL
+        }, 1000);
+      }
+    </script>
+  </body>
+</html>
