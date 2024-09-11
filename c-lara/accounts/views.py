@@ -42,3 +42,6 @@ def register_view(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
+
+def option_view(request):
+    return render (request, 'option.html')

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TicTacToe Options</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        position: relative;
+      }
+
+      h1 {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 2em;
+        text-align: center;
+        margin: 0;
+      }
+
+      .profile-container {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        text-align: center;
+      }
+
+      .profile-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .username {
+        font-size: 0.9em;
+      }
+
+      .tictactoe-container {
+        position: relative;
+        cursor: pointer;
+      }
+
+      .tictactoe-image {
+        width: 500px;
+        height: auto;
+      }
+
+      .options-container {
+        position: absolute;
+        top: 50%; /* Start positioning from 50% of the height */
+        left: 20px; /* Move it to the left side */
+        transform: translateY(-50%); /* Center vertically */
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* Align items to the left */
+      }
+
+      select, button, label {
+        font-size: 18px;
+        padding: 5px;
+        margin: 15px;
+        width: 250px; /* Optional: Ensure uniform width for elements */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="profile-container">
+      <img
+        src="{% static 'images/profile.png' %}"
+        alt="Profile Image"
+        class="profile-image"
+      />
+      <p class="username">{{ user.username }}</p>
+    </div>
+
+    <h1>TicTacToe</h1>
+
+    <!-- Container for the TicTacToe image -->
+    <div class="tictactoe-container">
+      <img
+        src="{% static 'images/tictactoe.png' %}"
+        alt="TicTacToe Image"
+        class="tictactoe-image"
+      />
+    </div>
+
+    <!-- Options below the TicTacToe grid -->
+    <div class="options-container">
+      <label for="player1">Player 1:</label>
+      <select id="player1">
+        <option value="gpt4">GPT-4</option>
+        <option value="llama">Llama</option>
+        <option value="claude">Claude</option>
+        <option value="gemini">Gemini</option>
+      </select>
+
+      <label for="player2">Player 2:</label>
+      <select id="player2">
+        <option value="gpt4">GPT-4</option>
+        <option value="llama">Llama</option>
+        <option value="claude">Claude</option>
+        <option value="gemini">Gemini</option>
+      </select>
+
+      <label for="prompt">Prompt:</label>
+      <select id="prompt">
+        <option value="cot">Chain of Thought (CoT)</option>
+        <option value="minimal">Minimal</option>
+        <option value="explicit">Explicit</option>
+      </select>
+
+      <button type="submit">Start Game</button>
+    </div>
+  </body>
+</html>
