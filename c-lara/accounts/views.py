@@ -43,8 +43,8 @@ def register_view(request):
         form = CustomUserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
 
-def option_view(request):
-    return render (request, 'option.html')
+def game_view(request):
+    return render (request, 'game.html')
 
 def leaderboard_view(request):
     # Dummy AI performance data for the leaderboard
