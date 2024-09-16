@@ -53,19 +53,20 @@ def game_view(request):
     return render (request, 'game.html')
 
 def leaderboard_view(request):
-    # Dummy AI performance data for the leaderboard
+    # Updated dummy AI performance data with draws
     ai_performance = [
-        {'name': 'AI Alpha', 'wins': 25, 'losses': 5},
-        {'name': 'AI Beta', 'wins': 20, 'losses': 10},
-        {'name': 'AI Gamma', 'wins': 15, 'losses': 15},
-        {'name': 'AI Delta', 'wins': 10, 'losses': 20},
-        {'name': 'AI Epsilon', 'wins': 5, 'losses': 25},
+        {'name': 'AI Alpha', 'wins': 25, 'losses': 5, 'draws': 3},
+        {'name': 'AI Beta', 'wins': 20, 'losses': 10, 'draws': 2},
+        {'name': 'AI Gamma', 'wins': 15, 'losses': 15, 'draws': 5},
+        {'name': 'AI Delta', 'wins': 10, 'losses': 20, 'draws': 1},
+        {'name': 'AI Epsilon', 'wins': 5, 'losses': 25, 'draws': 0},
     ]
 
     # Sort AI based on wins (or any other criteria later)
     ai_performance_sorted = sorted(ai_performance, key=lambda x: x['wins'], reverse=True)
 
     return render(request, 'leaderboard.html', {'ai_performance': ai_performance_sorted})
+
 
 def results_summary(request):
     return render(request, 'results_summary.html')

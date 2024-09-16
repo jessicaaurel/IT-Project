@@ -28,6 +28,7 @@
                 <th>AI Name</th>
                 <th>Wins</th>
                 <th>Losses</th>
+                <th>Draws</th> <!-- Add Draws column -->
             </tr>
         </thead>
         <tbody>
@@ -37,6 +38,7 @@
                     <td>{{ ai.name }}</td>
                     <td>{{ ai.wins }}</td>
                     <td>{{ ai.losses }}</td>
+                    <td>{{ ai.draws }}</td> <!-- Show Draws data -->
                 </tr>
             {% endfor %}
         </tbody>
