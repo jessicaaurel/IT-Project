@@ -26,22 +26,6 @@
         margin: 0;
       }
 
-      .profile-container {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        text-align: center;
-      }
-
-      .profile-image {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        display: block;
-        margin-bottom: 5px;
-        cursor: pointer; /* Make it clear that the image is clickable */
-      }
-
       .username {
         font-size: 0.9em;
       }
@@ -57,62 +41,128 @@
         height: auto;
       }
 
-      /* Initially show X in black */
       .x-mark {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         font-size: 5em;
-        color: black; /* Initially black */
+        color: black;
         font-weight: bold;
       }
 
-      /* Change X color to red when clicked */
       .x-mark.clicked {
         color: red;
       }
 
-      /* Add small text below X */
       .click-to-play {
         position: absolute;
-        top: 65%; /* Adjust this to change the spacing between X and the text */
+        top: 65%;
         left: 50%;
         transform: translate(-50%, -50%);
         font-size: 1em;
         color: grey;
       }
+
+      /* Sidebar and dropdown menu styles */
+      .container {
+        display: flex;
+      }
+
+      .sidebar {
+        width: 250px;
+        padding: 20px;
+        height: 100vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .profile-icon {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .profile-icon img {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+        border-radius: 50%;
+      }
+
+      .menu {
+        margin-top: 20px;
+      }
+
+      .menu ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .menu ul ul {
+        padding-left: 20px;
+      }
+
+      .menu li {
+        margin-bottom: 10px;
+      }
+
+      .menu.hidden {
+        display: none;
+      }
+
+      .content {
+        flex-grow: 1;
+        padding: 20px;
+      }
     </style>
   </head>
   <body>
-    <div class="profile-container">
-      <!-- Wrap the profile image in a clickable link -->
-      <a href="/profile-page">
-        <img
-          src="{% static 'images/profile.png' %}"
-          alt="Profile Image"
-          class="profile-image"
-        />
-      </a>
-      <p class="username">{{ user.username }}</p>
+    <!-- Sidebar and profile -->
+    <div class="container">
+      <div class="sidebar">
+        <div class="profile-icon">
+          <img src="{% static 'images/profile.png' %}" alt="Profile" onclick="toggleMenu()">
+          <span>{{ user.username }}</span>
+        </div>
+        <nav class="menu hidden" id="profile-menu">
+          <ul>
+            <li><a href="{% url 'leaderboard' %}">Leaderboard</a></li>
+            <li><a href="#">Results</a>
+              <ul>
+                <li><a href="{% url 'summary' %}">Summary</a></li>
+                <li><a href="{% url 'statistics' %}">Statistics</a></li>
+              </ul>
+            </li>
+            <li><a href="{% url 'about' %}">About</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Main Content -->
+      <div class="content">
+        <h1>TicTacToe</h1>
+        <div class="tictactoe-container" onclick="showX()">
+          <img
+            src="{% static 'images/tictactoe.png' %}"
+            alt="TicTacToe Image"
+            class="tictactoe-image"
+          />
+          <div class="x-mark" id="xMark">X</div>
+          <div class="click-to-play" id="clickToPlay">Click to play</div>
+        </div>
+      </div>
     </div>
 
-    <h1>TicTacToe</h1>
-
-    <!-- Container for the TicTacToe image, "X" mark, and the small text -->
-    <div class="tictactoe-container" onclick="showX()">
-      <img
-        src="{% static 'images/tictactoe.png' %}"
-        alt="TicTacToe Image"
-        class="tictactoe-image"
-      />
-      <!-- The X mark that will appear in the middle -->
-      <div class="x-mark" id="xMark">X</div>
-      <!-- Small text below the X -->
-      <div class="click-to-play" id="clickToPlay">Click to play</div>
-    </div>
-
+    <!-- Script to handle menu toggle -->
     <script>
+      function toggleMenu() {
+        const menu = document.getElementById("profile-menu");
+        menu.classList.toggle("hidden");
+      }
+
       function showX() {
         window.location.href = "/game";
       }
