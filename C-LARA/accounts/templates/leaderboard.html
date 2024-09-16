@@ -3,10 +3,13 @@
 <head>
     <title>Tic-Tac-Toe AI Leaderboard</title>
     <style>
+        body {
+            text-align: center; 
+        }
         table {
             width: 50%;
             border-collapse: collapse;
-            margin: 25px 0;
+            margin: 25px auto; 
             font-size: 18px;
             text-align: left;
         }
@@ -16,6 +19,9 @@
         }
         th {
             background-color: #f2f2f2;
+        }
+        h1 {
+            margin-bottom: 20px; 
         }
     </style>
 </head>
@@ -28,7 +34,7 @@
                 <th>AI Name</th>
                 <th>Wins</th>
                 <th>Losses</th>
-                <th>Draws</th> <!-- Add Draws column -->
+                <th>Draws</th> 
             </tr>
         </thead>
         <tbody>
@@ -38,7 +44,7 @@
                     <td>{{ ai.name }}</td>
                     <td>{{ ai.wins }}</td>
                     <td>{{ ai.losses }}</td>
-                    <td>{{ ai.draws }}</td> <!-- Show Draws data -->
+                    <td>{{ ai.draws }}</td> 
                 </tr>
             {% endfor %}
         </tbody>
