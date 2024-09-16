@@ -67,10 +67,6 @@ def leaderboard_view(request):
 
     return render(request, 'leaderboard.html', {'ai_performance': ai_performance_sorted})
 
-
-def results_summary(request):
-    return render(request, 'results_summary.html')
-
 def results_statistics(request):
     return render(request, 'results_statistics.html')
 
