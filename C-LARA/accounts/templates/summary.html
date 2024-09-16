@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Match Summary</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Match Summary</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Match</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td>{{ result.game_date }}</td>
+                <td>{{ result.player_one.username }} vs {{ result.player_two.username }}</td>
+                <td>
+                    {% if result.outcome == 'P1' %}
+                        Player 1 Wins
+                    {% elif result.outcome == 'P2' %}
+                        Player 2 Wins
+                    {% else %}
+                        Draw
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

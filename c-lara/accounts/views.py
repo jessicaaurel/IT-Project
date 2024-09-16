@@ -3,6 +3,12 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from .forms import CustomUserCreationForm
+from .models import GameResult
+
+def summary_view(request):
+    results = GameResult.objects.all().order_by('-game_date')
+    return render(request, 'summary.html', {'results': results})
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -73,5 +79,10 @@ def about(request):
 def logout_view(request):
     # Handle logout logic here
     return redirect('login')
+
+def summary_view(request):
+    results = GameResult.objects.all().order_by('-game_date')  # Get all game results, ordered by most recent
+    return render(request, 'summary.html', {'results': results})
+
 
 
