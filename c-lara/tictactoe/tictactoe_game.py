@@ -1,20 +1,10 @@
-"""
-Define the non-minimax players and set things up to allow generation of a game between two of them.
-
-The player functions return a four-tuple of values ( move, cot_record, prompt, cost ), where
-
-move         is the chosen move, in algebraic form
-cot_record   is the Chain of Thought record if there is one, else None
-prompt       is the prompt sent to GPT-4 is there is one, else None
-cost         is the cost in dollars of executing the GPT-4 calls if there were any, else 0
-
-We use async functions so that we can play multiple games at the same time.
-"""
+# Define the non-minimax players and set things up to allow generation of a game between two of them.
 
 from .tictactoe_engine import minimax, get_board_from_positions, draw_board, get_available_moves, check_win, check_draw
 from .tictactoe_engine import index_to_algebraic, algebraic_to_index
 from .tictactoe_gpt4 import request_minimal_gpt4_move_async, request_cot_analysis_and_move_async, request_cot_analysis_and_move_with_voting_async
 from .tictactoe_repository import get_best_few_shot_examples_async, cot_template_name_for_experiment_name, get_experiment_strategy
+from .tictactoe_gemini import request_minimal_gemini_move_async
 
 from .clara_utils import post_task_update
 
@@ -28,9 +18,8 @@ known_players = ( 'random_player',                         # 1. Play random move
                   'minimal_gpt4_player',                   # 4. Ask GPT-4 for move
                   'cot_player_without_few_shot',           # 5. Ask GPT-4 for move using Chain of Thought
                   'cot_player_without_few_shot_explicit',  # 6. As (5) but give detailed advice on how to think
-                  'cot_player_with_few_shot' )             # 7. Ask GPT-4 for move using Chain of Thought
-                                                           #    Get version of template and few-shot examples
-                                                           #    from the experiment directory
+                  'cot_player_with_few_shot',              # 7. Ask GPT-4 for move using Chain of Thought
+                  'gemini_minimal_player' )                # 8. Ask Gemini LLM for move
 
 # Play random moves (baseline)
 def random_player(board, player, callback=None):
@@ -83,9 +72,15 @@ async def cot_player_with_few_shot_async(board, player, experiment_name, cycle_n
     total_cost = sum(call.cost for call in response['api_calls']) + evaluation_cost
     return algebraic_to_index(response['selected_move']), response['cot_record'], response['prompt'], total_cost
 
+# Ask Gemini LLM for move
+async def gemini_minimal_player_async(board, player):
+    response = await request_minimal_gemini_move_async(board, player)  # Assuming this function exists
+    total_cost = sum(call.cost for call in response['api_calls'])
+    return algebraic_to_index(response['selected_move']), None, response['prompt'], total_cost
+
 # Invoke the named player with the given position and with x_or_o to move
 # We pass the experiment_name and the cycle_number for the few-shot player,
-# so that it can find the atrategy and the few-shot examples
+# so that it can find the strategy and the few-shot examples
 async def invoke_player_async(player_name, board, x_or_o, experiment_name, cycle_number):
     complain_if_unknown_player(player_name)
     complain_if_unknown_x_or_o(x_or_o)
@@ -105,6 +100,8 @@ async def invoke_player_async(player_name, board, x_or_o, experiment_name, cycle
             return await cot_player_without_few_shot_explicit_async(board, x_or_o)
         elif player_name == 'cot_player_with_few_shot':
             return await cot_player_with_few_shot_async(board, x_or_o, experiment_name, cycle_number)
+        elif player_name == 'gemini_minimal_player':
+            return await gemini_minimal_player_async(board, x_or_o)
     except Exception as e:
         # Fall back to random player if there's an exception
         #raise e
@@ -126,7 +123,7 @@ def complain_if_unknown_x_or_o(x_or_o, callback=None):
 
 # Play a game between two players.
 # We pass the experiment_name and the cycle_number for the few-shot player,
-# so that it can find the atrategy and the few-shot examples
+# so that it can find the strategy and the few-shot examples
 async def play_game_async(player1, player2, experiment_name, cycle_number):
     complain_if_unknown_player(player1)
     complain_if_unknown_player(player2)

@@ -374,6 +374,10 @@ class ChatGPTError(Exception):
     def __init__(self, message = 'ChatGPT error'):
         self.message = message
 
+class GeminiError(Exception):
+    def __init__(self, message = 'Gemini error'):
+        self.message = message
+
 class TreeTaggerError(Exception):
     def __init__(self, message = 'TreeTagger error'):
         self.message = message
