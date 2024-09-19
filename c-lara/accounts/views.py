@@ -81,5 +81,7 @@ def summary_view(request):
     results = GameResult.objects.all().order_by('-game_date')  # Get all game results, ordered by most recent
     return render(request, 'summary.html', {'results': results})
 
+def human_vs_human(request):
+    return render(request, 'humanhuman.html')
 
 

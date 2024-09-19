@@ -182,15 +182,30 @@
         <option value="explicit">Explicit</option>
       </select>
 
-      <button type="submit">Start Game</button>
+      <button id="start-game" type="submit">Start Game</button>
     </div>
 
-    <!-- Script to handle menu toggle -->
+    <!-- Script to handle menu toggle and game logic -->
     <script>
       function toggleMenu() {
         const menu = document.getElementById("profile-menu");
         menu.classList.toggle("hidden");
       }
+
+      // Function to check if both players are human and redirect accordingly
+      document.getElementById("start-game").addEventListener("click", function() {
+        const player1 = document.getElementById("player1").value;
+        const player2 = document.getElementById("player2").value;
+
+        // Check if both players are human
+        if (player1 === "human" && player2 === "human") {
+          // Redirect to the human vs human page
+          window.location.href = "/humanhuman/";
+        } else {
+          // Start the game normally if players are not both human
+          showX(); // Example game start function, update it as needed for your game logic
+        }
+      });
 
       function showX() {
         window.location.href = "/game";
