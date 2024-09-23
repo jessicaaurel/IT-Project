@@ -3,50 +3,192 @@
 <head>
     <title>Match Summary</title>
     <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Layout Styles */
+        .container {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin-top: 20px;
+        }
+
+        /* Profile and Menu Styles */
+        .profile-icon {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .profile-icon img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: black;
+            font-size: 1.1em;
+        }
+
+        nav a:hover {
+            color: #aaa;
+        }
+
+        .menu {
+            margin-top: 20px;
+        }
+
+        .menu ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .menu ul ul {
+            padding-left: 20px;
+        }
+
+        .menu li {
+            margin-bottom: 10px;
+        } 
+
+        .menu.hidden {
+            display: none;
+        }
+
+        /* Content Styles */
+        h1 {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2em;
+            text-align: center;
+            margin: 0;
+        }
+
+        /* Add space below the heading */
+        .content h1 {
+            margin-bottom: 20px;
+        }
+
+        /* Table Styles */
         table {
-            width: 100%;
+            width: 80%;
             border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            margin-top: 50px; /* Add more space above the table */
         }
+
         th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: center;
+            border: 1px solid #ddd;
         }
+
         th {
             background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
         }
-        h1 {
-            text-align: center; 
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
         }
     </style>
 </head>
 <body>
-    <h1>Match Summary</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Match</th>
-                <th>Result</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for result in results %}
-            <tr>
-                <td>{{ result.game_date }}</td>
-                <td>{{ result.player_one.username }} vs {{ result.player_two.username }}</td>
-                <td>
-                    {% if result.outcome == 'P1' %}
-                        Player 1 Wins
-                    {% elif result.outcome == 'P2' %}
-                        Player 2 Wins
-                    {% else %}
-                        Draw
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- Load the static tag library -->
+    {% load static %}
+
+    <!-- Sidebar and profile -->
+    <div class="container">
+        <div class="sidebar">
+            <div class="profile-icon">
+                <img src="{% static 'images/profile.png' %}" alt="Profile" onclick="toggleMenu()">
+                <span>{{ user.username }}</span>
+            </div>
+            <nav class="menu hidden" id="profile-menu">
+                <ul>
+                    <li><a href="{% url 'leaderboard' %}">Leaderboard</a></li>
+                    <li><span>Results</span>
+                        <ul>
+                            <li><a href="{% url 'summary' %}">Summary</a></li>
+                            <li><a href="{% url 'statistics' %}">Statistics</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'about' %}">About</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main content -->
+        <div class="content">
+            <h1>Match Summary</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Match</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>{{ result.game_date }}</td>
+                        <td>{{ result.player_one.username }} vs {{ result.player_two.username }}</td>
+                        <td>
+                            {% if result.outcome == 'P1' %}
+                                Player 1 Wins
+                            {% elif result.outcome == 'P2' %}
+                                Player 2 Wins
+                            {% else %}
+                                Draw
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Script to handle menu toggle -->
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById("profile-menu");
+            menu.classList.toggle("hidden");
+        }
+    </script>
 </body>
 </html>
