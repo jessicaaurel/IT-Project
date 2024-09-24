@@ -1,24 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
-</head>
-<body>
-    <h2>Login</h2>
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .login-container {
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 400px; /* Increased width */
+      }
+      h2 {
+        text-align: left;
+        color: #333;
+        margin-bottom: 20px;
+      }
+      form {
+        margin: 0 auto;
+        width: 100%; /* Full width of container */
+      }
+      label {
+        float: left;
+        clear: both;
+        width: 100%;
+        margin-top: 10px;
+        color: #666;
+        text-align: left;
+      }
+      input[type="text"],
+      input[type="password"],
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      button {
+        background-color: #8a8a8a; /* grey */
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+      button:hover {
+        opacity: 0.8;
+      }
+      a {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        text-decoration: none;
+        color: #007bff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <h2>Login</h2>
+      <form action="/login" method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+
         <button type="submit">Login</button>
-    </form>
-    <p><a href="{% url 'register' %}">Don't have an account? Register here.</a></p>
-</body>
+        <p><a href="/register">Don't have an account? Register here.</a></p>
+      </form>
+    </div>
+  </body>
 </html>

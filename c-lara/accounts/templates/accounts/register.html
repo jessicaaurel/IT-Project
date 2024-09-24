@@ -1,15 +1,91 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register</title>
-</head>
-<body>
-    <h1>Register</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .register-container {
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 500px; /* Increased width for better layout */
+      }
+      h1 {
+        text-align: left;
+        color: #333;
+        margin-bottom: 20px;
+      }
+      form {
+        margin: 0 auto;
+        width: 100%; /* Full width of container */
+      }
+      label {
+        float: left;
+        clear: both;
+        width: 100%;
+        margin-top: 10px;
+        color: #666;
+        text-align: left;
+      }
+      input,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      button {
+        background-color: #007bff; /* Blue */
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+      button:hover {
+        opacity: 0.8;
+      }
+      .info-text {
+        color: #888; /* Grey text for form requirements */
+        font-size: 0.85em; /* Smaller font size for subtexts */
+        margin-top: 5px;
+      }
+      a {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        text-decoration: none;
+        color: #007bff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="register-container">
+      <h1>Register</h1>
+      <form method="post">
+        {% csrf_token %} {{ form.as_p }}
+        <div class="info-text">
+          Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          Your password can’t be too similar to your other personal information.
+          Your password must contain at least 8 characters. Your password can’t
+          be a commonly used password. Your password can’t be entirely numeric.
+        </div>
         <button type="submit">Register</button>
-    </form>
-    <p><a href="{% url 'login' %}">Already have an account? Login here.</a></p>
-</body>
+      </form>
+      <p>
+        <a href="{% url 'login' %}">Already have an account? Login here.</a>
+      </p>
+    </div>
+  </body>
 </html>
