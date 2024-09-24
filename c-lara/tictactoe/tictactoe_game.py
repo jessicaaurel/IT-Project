@@ -12,14 +12,19 @@ import random
 import json
 import traceback
 
-known_players = ( 'random_player',                         # 1. Play random moves (baseline)
-                  'human_player',                          # 2. Ask human to input move
-                  'minimax_player',                        # 3. Perfect minimax player
-                  'minimal_gpt4_player',                   # 4. Ask GPT-4 for move
-                  'cot_player_without_few_shot',           # 5. Ask GPT-4 for move using Chain of Thought
-                  'cot_player_without_few_shot_explicit',  # 6. As (5) but give detailed advice on how to think
-                  'cot_player_with_few_shot',              # 7. Ask GPT-4 for move using Chain of Thought
-                  'gemini_minimal_player' )                # 8. Ask Gemini LLM for move
+known_players = (
+    'random_player',                         # 1. Play random moves (baseline)
+    'human_player',                          # 2. Ask human to input move
+    'minimax_player',                        # 3. Perfect minimax player
+    'minimal_gpt4_player',                   # 4. Ask GPT-4 for move
+    'cot_player_without_few_shot',           # 5. Ask GPT-4 for move using Chain of Thought
+    'cot_player_without_few_shot_explicit',  # 6. As (5) but give detailed advice on how to think
+    'cot_player_with_few_shot',              # 7. Ask GPT-4 for move using Chain of Thought
+    'gemini_minimal_player',                 # 8. Ask Gemini LLM for move
+    'llama_minimal_player',                  # 9. Ask Llama LLM for move
+    'claude_minimal_player'                   # 10. Ask Claude LLM for move
+)
+
 
 # Play random moves (baseline)
 def random_player(board, player, callback=None):
@@ -102,10 +107,14 @@ async def invoke_player_async(player_name, board, x_or_o, experiment_name, cycle
         elif player_name == 'cot_player_with_few_shot':
             return await cot_player_with_few_shot_async(board, x_or_o, experiment_name, cycle_number)
         elif player_name == 'gemini_minimal_player':
-            print("You are now playing against Gemini.")
             return await gemini_minimal_player_async(board, x_or_o)
+        elif player_name == 'llama_minimal_player':
+            return await llama_minimal_player_async(board, x_or_o)
+        elif player_name == 'claude_minimal_player':
+            return await request_minimal_claude_move_async(board, x_or_o)
     except Exception as e:
         return random_player(board, x_or_o)
+
 
 # Raise an exception if we get an unknown player
 def complain_if_unknown_player(player_name, callback=None):
@@ -157,16 +166,39 @@ async def play_game_async(player1, player2, experiment_name, cycle_number):
         draw_board(board)
         
         if check_win(board, 'X'):
+            if player1 == 'human_player':
+                print(f"Human player wins!")
+            elif player1 == 'gemini_minimal_player':
+                print(f"Gemini wins!")
+            elif player1 == 'llama_minimal_player':
+                print(f"LLaMA wins!")
+            elif player1 == 'claude_minimal_player':
+                print(f"Claude wins!")
+            else:
+                print(f"{player1} wins!")
+
             log.append({'game_over': True,
                         'score': { player1: 1, player2: 0 },
                         'total_cost': total_cost})
             break
         elif check_win(board, 'O'):
+            if player2 == 'human_player':
+                print(f"Human player wins!")
+            elif player2 == 'gemini_minimal_player':
+                print(f"Gemini wins!")
+            elif player2 == 'llama_minimal_player':
+                print(f"LLaMA wins!")
+            elif player1 == 'claude_minimal_player':
+                print(f"Claude wins!")
+            else:
+                print(f"{player2} wins!")
+
             log.append({'game_over': True,
                         'score': { player1: 0, player2: 1 },
                         'total_cost': total_cost})
             break
         elif check_draw(board):
+            print("It's a draw!")
             log.append({'game_over': True,
                         'score': { player1: 0.5, player2: 0.5 },
                         'total_cost': total_cost})
