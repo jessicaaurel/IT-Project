@@ -84,7 +84,7 @@ async def gemini_minimal_player_async(board, player):
 async def invoke_player_async(player_name, board, x_or_o, experiment_name, cycle_number):
     complain_if_unknown_player(player_name)
     complain_if_unknown_x_or_o(x_or_o)
-    
+
     try:
         if player_name == 'random_player':
             return random_player(board, x_or_o)
@@ -93,6 +93,7 @@ async def invoke_player_async(player_name, board, x_or_o, experiment_name, cycle
         elif player_name == 'minimax_player':
             return minimax_player(board, x_or_o)
         elif player_name == 'minimal_gpt4_player':
+            print("You are now playing against OpenAI GPT-4.")
             return await minimal_gpt4_player_async(board, x_or_o)
         elif player_name == 'cot_player_without_few_shot':
             return await cot_player_without_few_shot_async(board, x_or_o)
@@ -101,10 +102,9 @@ async def invoke_player_async(player_name, board, x_or_o, experiment_name, cycle
         elif player_name == 'cot_player_with_few_shot':
             return await cot_player_with_few_shot_async(board, x_or_o, experiment_name, cycle_number)
         elif player_name == 'gemini_minimal_player':
+            print("You are now playing against Gemini.")
             return await gemini_minimal_player_async(board, x_or_o)
     except Exception as e:
-        # Fall back to random player if there's an exception
-        #raise e
         return random_player(board, x_or_o)
 
 # Raise an exception if we get an unknown player
