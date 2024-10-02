@@ -1,6 +1,5 @@
-{% load static %} <!-- Load the static files library -->
-
 <!DOCTYPE html>
+{% load static %}
 <html>
 <head>
     <title>About Us</title>
@@ -91,6 +90,12 @@
             margin: 0;
         }
 
+        h2 {
+            margin-right: 20px; /* Add spacing to the right */
+            text-align: left;   /* Ensure it's aligned left */
+            width: 100%;        /* Make sure it spans the width of its container */
+        }
+
         footer {
             background-color: #f2f2f2;
             padding: 10px 0;
@@ -103,8 +108,6 @@
             width: 100%; /* Ensure it spans the full width */
             margin-top: auto;
         }
-
-
     </style>
 </head>
 <body>
@@ -137,10 +140,11 @@
                 <h2>Welcome to C-LARA</h2>
                 <p>C-LARA, or ChatGPT-based Learning And Reading Assistant, is an open-source web platform currently under development by an international open-source consortium. Our purpose is to make it easy to create engaging multimedia texts that can help language learners develop their reading and listening skills. The platform draws inspiration from the earlier LARA project but has been completely rewritten.</p>
             
-                <h3>Our Mission</h3>
-                <p>As the name suggests, ChatGPT-4 is at the center of our activities. It is used in two complementary ways: as a software component and as a software engineer...</p>
-            
-                <h3>Meet Our Team</h3>
+                <h2>Our Mission</h2>
+                <p>As the name suggests, ChatGPT-4 is at the center of our activities. It is used in two complementary ways: as a software component and as a software engineer. In its software component role, ChatGPT-4 performs all the core language processing functions in the platform. It can write texts, divide them into sentences and lexical units, add glosses in another language, and annotate words with lemmas (root form) information. Audio is automatically added for the wide range of languages where a TTS engine is available.</p>
+                <p>As a software engineer, ChatGPT-4 has played a central role in creating the codebase, which is freely accessible on GitHub. It has produced about 90% of the code, working in close collaboration with its human partner Manny Rayner. ChatGPT-4 is also responsible for much of the software design and has written a substantial portion of the academic publications produced by the project. We consider that ChatGPT-4 has amply demonstrated its right to be accepted as a core member of the project, and our policy of consistently crediting it as a co-author has already led to some controversy.</p>
+
+                <h2>Meet Our Team</h2>
                 <ul>
                     <li><strong>Erich Wiguna</strong> - Scrum Master and Back-End Engineer</li>
                     <li><strong>Jessica Aurelia Wijaya</strong> - Front-End Developer</li>
@@ -149,7 +153,7 @@
                     <li><strong>Revelino Edrensya Aldrin</strong> - Product Owner and Front-End Engineer</li>
                 </ul>
 
-                <h3>Get in Touch</h3>
+                <h2>Get in Touch</h2>
                 <p>If you have any questions, feel free to contact us. We’d love to hear from you!</p>
             </section>
         </div>
