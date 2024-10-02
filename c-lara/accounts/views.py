@@ -85,3 +85,7 @@ def human_vs_human(request):
     return render(request, 'humanhuman.html')
 
 
+def about_view(request):
+    return render(request, 'about.html')
+
+
