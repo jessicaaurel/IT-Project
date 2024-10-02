@@ -202,6 +202,9 @@
         if (player1 === "human" && player2 === "human") {
           // Redirect to the human vs human page
           window.location.href = "/humanhuman/";
+        } else if (player1 === "human" && (player2 === "gemini" || player2 === "claude" || player2 === "llama")) {
+          // Redirect to human vs AI page
+          window.location.href = `/humanvsai/${player2}/`; // You can customize the URL as needed
         } else {
           // Start the game normally if players are not both human
           showX(); // Example game start function, update it as needed for your game logic

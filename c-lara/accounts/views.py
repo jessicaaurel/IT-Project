@@ -84,8 +84,28 @@ def summary_view(request):
 def human_vs_human(request):
     return render(request, 'humanhuman.html')
 
+async def human_vs_ai_game(player1, player2):
+    experiment_name = None  # You can set this if you have specific experiments
+    cycle_number = 0  # Adjust as needed
+    log = await play_game_async(player1, player2, experiment_name, cycle_number)
+    return log
 
 def about_view(request):
     return render(request, 'about.html')
 
 
+def human_vs_ai_view(request, ai_model):
+    if request.method == "GET":
+        return render(request, 'humanai.html', {'ai_model': ai_model})
+
+    if request.method == "POST":
+        player1 = 'human_player'
+        player2 = ai_model  # This will be 'gemini', 'claude', or 'llama'
+        
+        # Use asyncio to run the game asynchronously
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        log = loop.run_until_complete(human_vs_ai_game(player1, player2))
+        
+        # Return the game log as a JSON response
+        return JsonResponse(log, safe=False)
