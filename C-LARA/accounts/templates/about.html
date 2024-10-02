@@ -1,54 +1,171 @@
-<!-- about.html -->
-
-{% load static %}  <!-- Load the static files library -->
+{% load static %} <!-- Load the static files library -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Link to your CSS if needed -->
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Layout Styles */
+        .container {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin-top: 20px;
+        }
+
+        /* Profile and Menu Styles */
+        .profile-icon {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .profile-icon img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: black;
+            font-size: 1.1em;
+        }
+
+        nav a:hover {
+            color: #aaa;
+        }
+
+        .menu {
+            margin-top: 20px;
+        }
+
+        .menu ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .menu ul ul {
+            padding-left: 20px;
+        }
+
+        .menu li {
+            margin-bottom: 10px;
+        }
+
+        .menu.hidden {
+            display: none;
+        }
+
+        h1 {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2em;
+            text-align: center;
+            margin: 0;
+        }
+
+        footer {
+            background-color: #f2f2f2;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 0.9em;
+            position: fixed; /* Change from relative to fixed */
+            bottom: 0; /* Pin it to the bottom */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Align center */
+            width: 100%; /* Ensure it spans the full width */
+            margin-top: auto;
+        }
+
+
+    </style>
 </head>
 <body>
-    <header>
-        <h1>About Us</h1>
-        <nav>
-            <ul>
-                <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="{% url 'about' %}">About</a></li>
-                <li><a href="{% url 'login' %}">Login</a></li>
-                <li><a href="{% url 'register' %}">Register</a></li>
-            </ul>
-        </nav>
-    </header>
+    <div class="container">
+        <div class="sidebar">
+            <div class="profile-icon">
+                <img src="{% static 'images/profile.png' %}" alt="Profile" onclick="toggleMenu()">
+                <span>{{ user.username }}</span>
+            </div>
+            <nav class="menu hidden" id="profile-menu">
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'leaderboard' %}">Leaderboard</a></li>
+                    <li><span>Results</span>
+                        <ul>
+                            <li><a href="{% url 'summary' %}">Summary</a></li>
+                            <li><a href="{% url 'statistics' %}">Statistics</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'about' %}">About</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
 
-    <main>
-        <section id="about">
-            <h2>Welcome to C-LARA</h2>
-            <p>C-LARA, or ChatGPT-based Learning And Reading Assistant, is an open-source web platform currently under development by an international open-source consortium. Our purpose is to make it easy to create engaging multimedia texts that can help language learners develop their reading and listening skills. The platform draws inspiration from the earlier LARA project but has been completely rewritten.</p>
-        
-            <h3>Our Mission</h3>
-            <p>As the name suggests, ChatGPT-4 is at the center of our activities. It is used in two complementary ways: as a software component and as a software engineer. In its software component role, ChatGPT-4 performs all the core language processing functions in the platform. It can write texts, divide them into sentences and lexical units, add glosses in another language, and annotate words with lemmas (root form) information. Audio is automatically added for the wide range of languages where a TTS engine is available.</p>
-        
-            <p>As a software engineer, ChatGPT-4 has played a central role in creating the codebase, which is freely accessible on GitHub. It has produced about 90% of the code, working in close collaboration with its human partner Manny Rayner. ChatGPT-4 is also responsible for much of the software design and has written a substantial portion of the academic publications produced by the project. We consider that ChatGPT-4 has amply demonstrated its right to be accepted as a core member of the project, and our policy of consistently crediting it as a co-author has already led to some controversy.</p>
-        
-            <h3>Meet Our Team</h3>
-            <ul>
-                <li><strong>Erich Wiguna</strong> - Scrum Master and Back-End Engineer (20 y.o.) - Hobbies: Badminton and Chess</li>
-                <li><strong>Revelino Edrensya Aldrin</strong> - Product Owner and Front-End Engineer (20 y.o.) - Hobbies: Football and Eating</li>
-                <li><strong>Jessica Aurelia Wijaya</strong> - Front-End Developer (20 y.o.) - Hobbies: Exercise</li>
-                <li><strong>Reagen Purnama</strong> - Meeting Manager and Front-End Engineer (21 y.o.) - Hobbies: Sleeping</li>
-                <li><strong>Nelson Nugroho</strong> - Back-End Developer (21 y.o.) - Hobbies: Basketball</li>
-            </ul>
-        
-            <h3>Get in Touch</h3>
-            <p>If you have any questions, feel free to contact us</a>. We’d love to hear from you!</p>
-        </section>
-    </main>
+        <!-- Main content -->
+        <div class="content">
+            <h1>About Us</h1>
+            <section id="about">
+                <h2>Welcome to C-LARA</h2>
+                <p>C-LARA, or ChatGPT-based Learning And Reading Assistant, is an open-source web platform currently under development by an international open-source consortium. Our purpose is to make it easy to create engaging multimedia texts that can help language learners develop their reading and listening skills. The platform draws inspiration from the earlier LARA project but has been completely rewritten.</p>
+            
+                <h3>Our Mission</h3>
+                <p>As the name suggests, ChatGPT-4 is at the center of our activities. It is used in two complementary ways: as a software component and as a software engineer...</p>
+            
+                <h3>Meet Our Team</h3>
+                <ul>
+                    <li><strong>Erich Wiguna</strong> - Scrum Master and Back-End Engineer</li>
+                    <li><strong>Jessica Aurelia Wijaya</strong> - Front-End Developer</li>
+                    <li><strong>Nelson Nugroho</strong> - Back-End Developer</li>
+                    <li><strong>Reagen Purnama</strong> - Meeting Manager and Front-End Engineer</li>
+                    <li><strong>Revelino Edrensya Aldrin</strong> - Product Owner and Front-End Engineer</li>
+                </ul>
 
+                <h3>Get in Touch</h3>
+                <p>If you have any questions, feel free to contact us. We’d love to hear from you!</p>
+            </section>
+        </div>
+    </div>
+
+    <!-- Footer -->
     <footer>
         <p>&copy; 2024 C-LARA. All rights reserved.</p>
     </footer>
+
+    <!-- Script to handle menu toggle -->
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById("profile-menu");
+            menu.classList.toggle("hidden");
+        }
+    </script>
 </body>
 </html>
