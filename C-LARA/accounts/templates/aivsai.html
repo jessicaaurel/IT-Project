@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Human vs AI TicTacToe</title>
+    <title>AI vs AI TicTacToe</title>
     <style>
       body {
         display: flex;
@@ -42,7 +42,6 @@
         justify-content: center;
         align-items: center;
         font-size: 4em;
-        cursor: pointer;
         border: 2px solid black;
       }
 
@@ -101,14 +100,16 @@
   </head>
   <body>
     <div class="content">
-      <h1>TicTacToe: Human vs AI</h1>
-      <div class="ai-selected">Selected AI: {{ ai_model }}</div>
-      <!-- Display selected AI -->
+      <h1>TicTacToe: AI vs AI</h1>
+      <div class="ai-selected">
+        AI (X): {{ ai1_model }} vs AI (O): {{ ai2_model }}
+      </div>
+      <!-- Display selected AIs -->
 
       <!-- W-L-D Counters -->
       <div class="counter">
-        Wins: <span id="wins">0</span> | Losses: <span id="losses">0</span> |
-        Draws: <span id="draws">0</span>
+        AI 1 Wins: <span id="wins-ai1">0</span> | AI 2 Wins:
+        <span id="wins-ai2">0</span> | Draws: <span id="draws">0</span>
       </div>
 
       <div class="tictactoe-container" id="tictactoe-board">
@@ -122,41 +123,38 @@
     </div>
 
     <script>
-      let currentPlayer = "X"; // Human player
+      let currentPlayer = "X"; // AI 1 starts
       let board = ["", "", "", "", "", "", "", "", ""];
       let gameActive = true;
 
       // W-L-D Counters
-      let wins = 0;
-      let losses = 0;
+      let winsAI1 = 0;
+      let winsAI2 = 0;
       let draws = 0;
 
-      function handleCellClick(event) {
-        const cellIndex = event.target.getAttribute("data-cell-index");
-        if (board[cellIndex] !== "" || !gameActive) {
-          return;
-        }
-        board[cellIndex] = currentPlayer;
-        event.target.innerText = currentPlayer;
-        checkWinner();
-        if (gameActive) {
-          currentPlayer = "O"; // AI's turn
-          aiMove();
-        }
-      }
-
       function aiMove() {
+        if (!gameActive) return; // Stop AI moves if the game is not active
+
         // Basic AI - Random Move
         const availableMoves = board
           .map((val, index) => (val === "" ? index : null))
           .filter((v) => v !== null);
+
+        if (availableMoves.length === 0) return; // No moves available
+
         const aiMove =
           availableMoves[Math.floor(Math.random() * availableMoves.length)];
         board[aiMove] = currentPlayer;
         document.querySelector(`div[data-cell-index="${aiMove}"]`).innerText =
           currentPlayer;
-        checkWinner();
-        currentPlayer = "X"; // Human's turn
+
+        checkWinner(); // Check if the game is over after this move
+
+        // Switch to the next player if the game is still active
+        if (gameActive) {
+          currentPlayer = currentPlayer === "X" ? "O" : "X"; // Switch turns
+          setTimeout(aiMove, 500); // AI takes turns every 0.5 seconds after this move
+        }
       }
 
       function checkWinner() {
@@ -181,16 +179,18 @@
         }
 
         if (roundWon) {
+          gameActive = false; // Stop the game if a player wins
+
           if (currentPlayer === "X") {
-            wins++; // Player win
-            document.getElementById("wins").innerText = wins;
-            alert("You win!"); // Show result
+            winsAI1++; // AI 1 win
+            document.getElementById("wins-ai1").innerText = winsAI1;
+            alert("AI 1 (X) wins!"); // Show result
           } else {
-            losses++; // AI win
-            document.getElementById("losses").innerText = losses;
-            alert("AI wins!"); // Show result
+            winsAI2++; // AI 2 win
+            document.getElementById("wins-ai2").innerText = winsAI2;
+            alert("AI 2 (O) wins!"); // Show result
           }
-          gameActive = false;
+
           setTimeout(resetBoard, 1000); // Reset the board after 1 second
           return;
         }
@@ -205,12 +205,13 @@
       }
 
       function resetBoard() {
-        currentPlayer = "X";
+        currentPlayer = "X"; // AI 1 always starts
         board = ["", "", "", "", "", "", "", "", ""];
         gameActive = true;
         document
           .querySelectorAll(".tictactoe-cell")
           .forEach((cell) => (cell.innerText = ""));
+        aiMove(); // Start the next round automatically without delay
       }
 
       function createBoard() {
@@ -220,12 +221,12 @@
           const cell = document.createElement("div");
           cell.classList.add("tictactoe-cell");
           cell.setAttribute("data-cell-index", i);
-          cell.addEventListener("click", handleCellClick);
           boardContainer.appendChild(cell);
         }
       }
 
       createBoard();
+      aiMove(); // Start the first move
     </script>
   </body>
 </html>

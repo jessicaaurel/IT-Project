@@ -43,20 +43,23 @@
 
       .options-container {
         position: absolute;
-        top: 50%; /* Start positioning from 50% of the height */
-        right: 20px; /* Move it to the right side */
-        transform: translateY(-50%); /* Center vertically */
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
         display: flex;
         flex-direction: column;
         align-items: flex-start;
       }
 
-      select, button, label {
+      select,
+      button,
+      label {
         font-size: 18px;
         padding: 5px;
         margin: 15px;
         width: 250px; /* Optional: Ensure uniform width for elements */
       }
+
       /* Sidebar and dropdown menu styles */
       .container {
         display: flex;
@@ -126,14 +129,19 @@
     <div class="container">
       <div class="sidebar">
         <div class="profile-icon">
-          <img src="{% static 'images/profile.png' %}" alt="Profile" onclick="toggleMenu()">
+          <img
+            src="{% static 'images/profile.png' %}"
+            alt="Profile"
+            onclick="toggleMenu()"
+          />
           <span>{{ user.username }}</span>
         </div>
         <nav class="menu hidden" id="profile-menu">
           <ul>
             <li><a href="{% url 'home' %}">Home</a></li>
             <li><a href="{% url 'leaderboard' %}">Leaderboard</a></li>
-            <li><span>Results</span>
+            <li>
+              <span>Results</span>
               <ul>
                 <li><a href="{% url 'summary' %}">Summary</a></li>
                 <li><a href="{% url 'statistics' %}">Statistics</a></li>
@@ -145,45 +153,47 @@
         </nav>
       </div>
 
-    <!-- Container for the TicTacToe image -->
-    <div class="content">
-      <h1>TicTacToe</h1>
-      <div class="tictactoe-container">
-        <img
-          src="{% static 'images/tictactoe.png' %}"
-          alt="TicTacToe Image"
-          class="tictactoe-image"
-        />
+      <!-- Container for the TicTacToe image -->
+      <div class="content">
+        <h1>TicTacToe</h1>
+        <div class="tictactoe-container">
+          <img
+            src="{% static 'images/tictactoe.png' %}"
+            alt="TicTacToe Image"
+            class="tictactoe-image"
+          />
+        </div>
       </div>
-    </div>
-    <!-- Options moved to the right -->
-    <div class="options-container">
-      <label for="player1">Player 1:</label>
-      <select id="player1">
-        <option value="gpt4">GPT-4</option>
-        <option value="llama">Llama</option>
-        <option value="claude">Claude</option>
-        <option value="gemini">Gemini</option>
-        <option value="human">Human</option>
-      </select>
 
-      <label for="player2">Player 2:</label>
-      <select id="player2">
-        <option value="gpt4">GPT-4</option>
-        <option value="llama">Llama</option>
-        <option value="claude">Claude</option>
-        <option value="gemini">Gemini</option>
-        <option value="human">Human</option>
-      </select>
+      <!-- Options moved to the right -->
+      <div class="options-container">
+        <label for="player1">Player 1:</label>
+        <select id="player1">
+          <option value="gpt4">GPT-4</option>
+          <option value="llama">Llama</option>
+          <option value="claude">Claude</option>
+          <option value="gemini">Gemini</option>
+          <option value="human">Human</option>
+        </select>
 
-      <label for="prompt">Prompt:</label>
-      <select id="prompt">
-        <option value="cot">Chain of Thought (CoT)</option>
-        <option value="minimal">Minimal</option>
-        <option value="explicit">Explicit</option>
-      </select>
+        <label for="player2">Player 2:</label>
+        <select id="player2">
+          <option value="gpt4">GPT-4</option>
+          <option value="llama">Llama</option>
+          <option value="claude">Claude</option>
+          <option value="gemini">Gemini</option>
+          <option value="human">Human</option>
+        </select>
 
-      <button id="start-game" type="submit">Start Game</button>
+        <label for="prompt">Prompt:</label>
+        <select id="prompt">
+          <option value="cot">Chain of Thought (CoT)</option>
+          <option value="minimal">Minimal</option>
+          <option value="explicit">Explicit</option>
+        </select>
+
+        <button id="start-game" type="submit">Start Game</button>
+      </div>
     </div>
 
     <!-- Script to handle menu toggle and game logic -->
@@ -193,27 +203,36 @@
         menu.classList.toggle("hidden");
       }
 
-      // Function to check if both players are human and redirect accordingly
-      document.getElementById("start-game").addEventListener("click", function() {
-        const player1 = document.getElementById("player1").value;
-        const player2 = document.getElementById("player2").value;
+      // Function to check the selected players and redirect accordingly
+      document
+        .getElementById("start-game")
+        .addEventListener("click", function () {
+          const player1 = document.getElementById("player1").value;
+          const player2 = document.getElementById("player2").value;
 
-        // Check if both players are human
-        if (player1 === "human" && player2 === "human") {
-          // Redirect to the human vs human page
-          window.location.href = "/humanhuman/";
-        } else if (player1 === "human" && (player2 === "gemini" || player2 === "claude" || player2 === "llama")) {
-          // Redirect to human vs AI page
-          window.location.href = `/humanvsai/${player2}/`; // You can customize the URL as needed
-        } else {
-          // Start the game normally if players are not both human
-          showX(); // Example game start function, update it as needed for your game logic
-        }
-      });
-
-      function showX() {
-        window.location.href = "/game";
-      }
+          // Check if both players are human
+          if (player1 === "human" && player2 === "human") {
+            // Redirect to the human vs human page
+            window.location.href = "/humanhuman/";
+          }
+          // Check if one player is human and the other is an AI
+          else if (
+            player1 === "human" &&
+            (player2 === "gemini" ||
+              player2 === "claude" ||
+              player2 === "llama" ||
+              player2 === "gpt4")
+          ) {
+            // Redirect to human vs AI page
+            window.location.href = `/humanvsai/${player2}/`;
+          }
+          // Check if both players are AIs (AI vs AI)
+          else if (player1 !== "human" && player2 !== "human") {
+            // Redirect to AI vs AI page
+            window.location.href = `/aivsai/${player1}/${player2}/`; // AI vs AI URL
+          }
+        });
     </script>
   </body>
 </html>
+x

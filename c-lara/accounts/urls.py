@@ -8,6 +8,7 @@ urlpatterns = [
     path('game/', views.game_view, name='game'),
     path('humanhuman/', views.human_vs_human, name='humanhuman'),
     path('humanvsai/<str:ai_model>/', views.human_vs_ai_view, name='human_vs_ai'),
+    path('aivsai/<str:ai1_model>/<str:ai2_model>/', views.ai_vs_ai_view, name='ai_vs_ai'),  # New AI vs AI URL
     path('leaderboard/', views.leaderboard_view, name='leaderboard'),
     path('results/summary/', views.summary_view, name='summary'),
     path('results/statistics/', views.results_statistics, name='statistics'),

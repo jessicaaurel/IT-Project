@@ -3,6 +3,9 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from .forms import CustomUserCreationForm
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 from .models import GameResult
 
 def summary_view(request):
@@ -90,6 +93,7 @@ async def human_vs_ai_game(player1, player2):
     log = await play_game_async(player1, player2, experiment_name, cycle_number)
     return log
 
+
 def about_view(request):
     return render(request, 'about.html')
 
@@ -109,3 +113,55 @@ def human_vs_ai_view(request, ai_model):
         
         # Return the game log as a JSON response
         return JsonResponse(log, safe=False)
+    
+    import asyncio
+from django.shortcuts import render
+from django.http import JsonResponse
+
+# AI vs AI game simulation
+async def ai_vs_ai_game(ai1, ai2):
+    experiment_name = None  # You can customize this if needed
+    cycle_number = 0  # This could represent the round or cycle number
+    log = await play_game_async(ai1, ai2, experiment_name, cycle_number)
+    return log
+
+# View for AI vs AI
+def ai_vs_ai_view(request, ai1_model, ai2_model):
+    if request.method == "GET":
+        return render(request, 'aivsai.html', {'ai1_model': ai1_model, 'ai2_model': ai2_model})
+
+    if request.method == "POST":
+        # Simulate AI vs AI game
+        ai1 = ai1_model  # First AI model (e.g., 'gemini')
+        ai2 = ai2_model  # Second AI model (e.g., 'claude')
+        
+        # Run the game asynchronously
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        log = loop.run_until_complete(ai_vs_ai_game(ai1, ai2))
+        
+        # Optionally, store the result in the GameResult model
+        GameResult.objects.create(
+            player_one=User.objects.get(username=ai1),  # Replace with appropriate AI user lookup logic
+            player_two=User.objects.get(username=ai2),
+            outcome=log['outcome']  # Ensure log contains an 'outcome' key (e.g., 'P1', 'P2', 'draw')
+        )
+
+        # Return the game log as a JSON response
+        return JsonResponse(log, safe=False)
+
+@csrf_exempt
+def store_game_result(request):
+    if request.method == 'POST':
+        player_one = User.objects.get(username='human_player')  # Replace with actual player lookup logic
+        player_two = User.objects.get(username='AIPlayer')
+        outcome = request.POST.get('outcome')
+
+        # Store the result in the database
+        GameResult.objects.create(
+            player_one=player_one,
+            player_two=player_two,
+            outcome=outcome
+        )
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'fail'})
