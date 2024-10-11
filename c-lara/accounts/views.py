@@ -1,3 +1,5 @@
+import json
+from tictactoe.tictactoe_game import play_game_async
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
@@ -90,6 +92,17 @@ def human_vs_human(request):
 async def human_vs_ai_game(player1, player2):
     experiment_name = None  # You can set this if you have specific experiments
     cycle_number = 0  # Adjust as needed
+
+
+
+    # TODO: This is a temporary fix for the prompt. Assume we always use minimal prompt.
+    if (player2 == "gpt4"):
+        player2 = "minimal_gpt4_player"
+    else:
+        player2 = player2 + "_minimal_player"
+
+
+
     log = await play_game_async(player1, player2, experiment_name, cycle_number)
     return log
 
@@ -97,24 +110,41 @@ async def human_vs_ai_game(player1, player2):
 def about_view(request):
     return render(request, 'about.html')
 
-
+@csrf_exempt
 def human_vs_ai_view(request, ai_model):
     if request.method == "GET":
         return render(request, 'humanai.html', {'ai_model': ai_model})
 
     if request.method == "POST":
+
         player1 = 'human_player'
         player2 = ai_model  # This will be 'gemini', 'claude', or 'llama'
+
+        # Requests and reads the outcome of the game
+        data = json.loads(request.body)
+        gameOutcome = data.get('outcome')
         
         # Use asyncio to run the game asynchronously
+        '''
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         log = loop.run_until_complete(human_vs_ai_game(player1, player2))
+        '''
+
+        game_result = GameResult.objects.create(
+            player_one=request.user,
+            ai_model=ai_model,
+            outcome=gameOutcome
+        )
+        print(f"Saved game result: {game_result}")
         
         # Return the game log as a JSON response
-        return JsonResponse(log, safe=False)
+        # return JsonResponse(log, safe=False)
+
+        # TODO: Temporary fix
+        return JsonResponse({'message': 'Success'}, status=200)
     
-    import asyncio
+import asyncio
 from django.shortcuts import render
 from django.http import JsonResponse
 

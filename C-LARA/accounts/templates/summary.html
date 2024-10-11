@@ -167,7 +167,14 @@
                     {% for result in results %}
                     <tr>
                         <td>{{ result.game_date }}</td>
-                        <td>{{ result.player_one.username }} vs {{ result.player_two.username }}</td>
+                        <td>
+                            {{ result.player_one.username }} vs 
+                            {% if result.player_two %}
+                                {{ result.player_two.username }}
+                            {% else %}
+                                {{ result.ai_model }} 
+                            {% endif %}
+                        </td>
                         <td>
                             {% if result.outcome == 'P1' %}
                                 Player 1 Wins

@@ -22,7 +22,7 @@ known_players = (
     'cot_player_with_few_shot',              # 7. Ask GPT-4 for move using Chain of Thought
     'gemini_minimal_player',                 # 8. Ask Gemini LLM for move
     'llama_minimal_player',                  # 9. Ask Llama LLM for move
-    'claude_minimal_player'                   # 10. Ask Claude LLM for move
+    'claude_minimal_player',                   # 10. Ask Claude LLM for move
 )
 
 

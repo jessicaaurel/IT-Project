@@ -185,10 +185,12 @@
             wins++; // Player win
             document.getElementById("wins").innerText = wins;
             alert("You win!"); // Show result
+            saveResult("P1");
           } else {
             losses++; // AI win
             document.getElementById("losses").innerText = losses;
             alert("AI wins!"); // Show result
+            saveResult("P2");
           }
           gameActive = false;
           setTimeout(resetBoard, 1000); // Reset the board after 1 second
@@ -223,6 +225,31 @@
           cell.addEventListener("click", handleCellClick);
           boardContainer.appendChild(cell);
         }
+      }
+      
+      // MODIFICATION
+      function saveResult(outcome) {
+        const csrfToken = '{{ csrf_token }}';
+
+        const data = {
+          outcome: outcome, 
+          csrfmiddlewaretoken: csrfToken
+        };
+
+        fetch("{% url 'human_vs_ai' ai_model %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Game result saved", data);
+        })
+        .catch((error) => {
+          console.error("Error when saving result", error);
+        });
       }
 
       createBoard();
