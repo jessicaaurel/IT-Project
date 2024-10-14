@@ -142,11 +142,13 @@
 
         if (availableMoves.length === 0) return; // No moves available
 
-        const aiMove =
+        // Rename local variable to avoid shadowing the aiMove function
+        const selectedMove =
           availableMoves[Math.floor(Math.random() * availableMoves.length)];
-        board[aiMove] = currentPlayer;
-        document.querySelector(`div[data-cell-index="${aiMove}"]`).innerText =
-          currentPlayer;
+        board[selectedMove] = currentPlayer;
+        document.querySelector(
+          `div[data-cell-index="${selectedMove}"]`
+        ).innerText = currentPlayer;
 
         checkWinner(); // Check if the game is over after this move
 
