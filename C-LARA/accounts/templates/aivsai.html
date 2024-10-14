@@ -1,37 +1,110 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI vs AI TicTacToe</title>
     <style>
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
+      /* Basic Reset */
+      * {
+        box-sizing: border-box;
         margin: 0;
+        padding: 0;
+      }
+
+      body {
         font-family: Arial, sans-serif;
+        background-color: #ffffff; /* Background color set to white */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start; /* Start from the top */
+        height: 100vh;
+        padding: 20px;
         position: relative;
       }
 
       h1 {
-        position: absolute;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 2em;
+        margin-bottom: 20px;
         text-align: center;
-        margin: 0;
       }
 
-      .tictactoe-container {
+      /* Back Button Styling */
+      .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        font-size: 16px;
+        padding: 10px 20px;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+
+      .back-button:hover {
+        background-color: #ddd;
+      }
+
+      .controls {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .controls label {
+        margin-right: 10px;
+        font-weight: bold;
+      }
+
+      .controls select {
+        padding: 5px;
+        font-size: 1em;
+      }
+
+      .start-button {
+        margin-top: 10px;
+        padding: 10px 20px;
+        font-size: 1em;
+        background-color: #007bff; /* Blue background */
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .start-button:hover:not([disabled]) {
+        background-color: #0056b3; /* Darker blue on hover */
+      }
+
+      .start-button:disabled {
+        background-color: #a5d6a7;
+        cursor: not-allowed;
+      }
+
+      /* Flex container for Board */
+      .game-container {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 20px;
+        width: 100%;
+        max-width: 800px;
+      }
+
+      /* Board Styling */
+      .board-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .board {
         display: grid;
         grid-template-columns: repeat(3, 150px);
         grid-template-rows: repeat(3, 150px);
         gap: 10px;
-        margin-top: 50px;
       }
 
       .tictactoe-cell {
@@ -42,125 +115,201 @@
         justify-content: center;
         align-items: center;
         font-size: 4em;
+        cursor: pointer;
         border: 2px solid black;
+        border-radius: 8px;
+        transition: background-color 0.3s, transform 0.3s;
       }
 
-      .options-container {
-        position: absolute;
-        top: 50%;
-        right: 20px;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
+      .tictactoe-cell:hover {
+        background-color: #e0e0e0;
+        transform: scale(1.05);
       }
 
-      button {
-        font-size: 18px;
+      .highlight {
+        background-color: yellow;
+        transform: scale(1.1);
+      }
+
+      .scoreboard {
+        font-size: 1.1em;
+        text-align: center;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 900px) {
+        .game-container {
+          flex-direction: column; /* Stack board vertically */
+          align-items: center;
+        }
+
+        .board {
+          grid-template-columns: repeat(3, 120px);
+          grid-template-rows: repeat(3, 120px);
+        }
+
+        .tictactoe-cell {
+          width: 120px;
+          height: 120px;
+          font-size: 3em;
+        }
+
+        .scoreboard {
+          font-size: 1em;
+        }
+
+        .move-history {
+          width: 250px;
+        }
+      }
+
+      @media (max-width: 500px) {
+        .controls select {
+          width: 100%;
+          margin-bottom: 10px;
+        }
+
+        .start-button {
+          width: 100%;
+        }
+
+        .board {
+          grid-template-columns: repeat(3, 100px);
+          grid-template-rows: repeat(3, 100px);
+        }
+
+        .tictactoe-cell {
+          width: 100px;
+          height: 100px;
+          font-size: 2.5em;
+        }
+
+        .move-history {
+          width: 200px;
+        }
+      }
+
+      /* Move History Styling (Optional) */
+      .move-history {
+        margin-top: 20px;
+        width: 300px;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: #fafafa;
         padding: 10px;
-        margin: 15px;
-        width: 150px;
-        cursor: pointer;
-      }
-
-      .ai-selected {
-        position: absolute;
-        top: 100px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 1.5em;
-        color: #333;
-      }
-
-      .counter {
-        position: absolute;
-        top: 150px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 1.2em;
-        color: #333;
-      }
-
-      /* Back button styling */
-      .back-button {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        font-size: 16px;
-        padding: 10px 20px;
-        background-color: #f0f0f0;
         border: 1px solid #ccc;
-        cursor: pointer;
+        border-radius: 4px;
       }
 
-      .back-button:hover {
-        background-color: #ddd;
+      .move-history ul {
+        list-style-type: decimal;
+        padding-left: 20px;
       }
     </style>
   </head>
   <body>
-    <div class="content">
-      <h1>TicTacToe: AI vs AI</h1>
-      <div class="ai-selected">
-        AI (X): {{ ai1_model }} vs AI (O): {{ ai2_model }}
-      </div>
-      <!-- Display selected AIs -->
+    <!-- Back Button -->
+    <button class="back-button" onclick="window.location.href='/game/'">
+      Back
+    </button>
 
-      <!-- W-L-D Counters -->
-      <div class="counter">
-        AI 1 Wins: <span id="wins-ai1">0</span> | AI 2 Wins:
-        <span id="wins-ai2">0</span> | Draws: <span id="draws">0</span>
-      </div>
+    <h1>AI vs AI TicTacToe</h1>
 
-      <div class="tictactoe-container" id="tictactoe-board">
-        <!-- Cells for the TicTacToe board will be generated by JavaScript -->
-      </div>
+    <div class="controls">
+      <label for="strategy">Select Prompt:</label>
+      <select id="strategy">
+        <option value="cot">Chain of Thought (CoT)</option>
+        <option value="minimal">Minimal</option>
+        <option value="explicit">Explicit</option>
+      </select>
+      <button id="start-button" class="start-button">Start Game</button>
+    </div>
 
-      <!-- Back Button -->
-      <button class="back-button" onclick="window.location.href='/game/'">
-        Back
-      </button>
+    <div class="game-container">
+      <!-- Removed CoT Textbox -->
+      <!-- <div class="cot" id="cot">
+        <strong>Chain of Thought:</strong>
+        <p>Waiting for AI moves...</p>
+      </div> -->
+
+      <!-- Board and scoreboard on the right -->
+      <div class="board-container">
+        <div class="board" id="board">
+          <!-- Cells will be generated by JavaScript -->
+        </div>
+
+        <div class="scoreboard">
+          <strong>Score:</strong> AI (X): <span id="score-x">0</span> | AI (O):
+          <span id="score-o">0</span> | Draws: <span id="score-draw">0</span>
+        </div>
+
+        <!-- Move History (Optional) -->
+        <div class="move-history">
+          <strong>Move History:</strong>
+          <ul id="move-history-list">
+            <!-- Move history will be appended here -->
+          </ul>
+        </div>
+      </div>
     </div>
 
     <script>
-      let currentPlayer = "X"; // AI 1 starts
+      // Initialize scores
+      let scoreX = 0;
+      let scoreO = 0;
+      let scoreDraw = 0;
+
+      // Game state variables
       let board = ["", "", "", "", "", "", "", "", ""];
-      let gameActive = true;
+      let currentPlayer = "X"; // AI X starts
+      let gameActive = false;
 
-      // W-L-D Counters
-      let winsAI1 = 0;
-      let winsAI2 = 0;
-      let draws = 0;
+      // Reference to DOM elements
+      const strategySelect = document.getElementById("strategy");
+      const startButton = document.getElementById("start-button");
+      const boardDiv = document.getElementById("board");
+      // Removed cotDiv reference
+      // const cotDiv = document.getElementById("cot");
+      const scoreXSpan = document.getElementById("score-x");
+      const scoreOSpan = document.getElementById("score-o");
+      const scoreDrawSpan = document.getElementById("score-draw");
+      const moveHistoryList = document.getElementById("move-history-list");
 
-      function aiMove() {
-        if (!gameActive) return; // Stop AI moves if the game is not active
-
-        // Basic AI - Random Move
-        const availableMoves = board
-          .map((val, index) => (val === "" ? index : null))
-          .filter((v) => v !== null);
-
-        if (availableMoves.length === 0) return; // No moves available
-
-        // Rename local variable to avoid shadowing the aiMove function
-        const selectedMove =
-          availableMoves[Math.floor(Math.random() * availableMoves.length)];
-        board[selectedMove] = currentPlayer;
-        document.querySelector(
-          `div[data-cell-index="${selectedMove}"]`
-        ).innerText = currentPlayer;
-
-        checkWinner(); // Check if the game is over after this move
-
-        // Switch to the next player if the game is still active
-        if (gameActive) {
-          currentPlayer = currentPlayer === "X" ? "O" : "X"; // Switch turns
-          setTimeout(aiMove, 500); // AI takes turns every 0.5 seconds after this move
+      // Generate the board
+      function generateBoard() {
+        boardDiv.innerHTML = "";
+        for (let i = 0; i < 9; i++) {
+          const cell = document.createElement("div");
+          cell.classList.add("tictactoe-cell");
+          cell.dataset.index = i;
+          boardDiv.appendChild(cell);
         }
       }
 
+      // Update the board display
+      function updateBoard() {
+        for (let i = 0; i < 9; i++) {
+          const cell = document.querySelector(
+            `.tictactoe-cell[data-index="${i}"]`
+          );
+          cell.textContent = board[i];
+        }
+      }
+
+      // Highlight the last move
+      function highlightMove(index) {
+        const cell = document.querySelector(
+          `.tictactoe-cell[data-index="${index}"]`
+        );
+        cell.classList.add("highlight");
+        setTimeout(() => {
+          cell.classList.remove("highlight");
+        }, 500);
+      }
+
+      // Check for a winner
       function checkWinner() {
-        const winningCombinations = [
+        const winCombinations = [
           [0, 1, 2],
           [3, 4, 5],
           [6, 7, 8],
@@ -171,64 +320,283 @@
           [2, 4, 6],
         ];
 
-        let roundWon = false;
-        for (let i = 0; i < winningCombinations.length; i++) {
-          const [a, b, c] = winningCombinations[i];
+        for (const combo of winCombinations) {
+          const [a, b, c] = combo;
           if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-            roundWon = true;
-            break;
+            return board[a];
           }
-        }
-
-        if (roundWon) {
-          gameActive = false; // Stop the game if a player wins
-
-          if (currentPlayer === "X") {
-            winsAI1++; // AI 1 win
-            document.getElementById("wins-ai1").innerText = winsAI1;
-            alert("AI 1 (X) wins!"); // Show result
-          } else {
-            winsAI2++; // AI 2 win
-            document.getElementById("wins-ai2").innerText = winsAI2;
-            alert("AI 2 (O) wins!"); // Show result
-          }
-
-          setTimeout(resetBoard, 1000); // Reset the board after 1 second
-          return;
         }
 
         if (!board.includes("")) {
-          draws++; // Game draw
-          document.getElementById("draws").innerText = draws;
-          alert("It's a draw!");
+          return "Draw";
+        }
+
+        return null;
+      }
+
+      // Evaluate board to determine the winner
+      function evaluateBoard(board) {
+        const winCombinations = [
+          [0, 1, 2],
+          [3, 4, 5],
+          [6, 7, 8],
+          [0, 3, 6],
+          [1, 4, 7],
+          [2, 5, 8],
+          [0, 4, 8],
+          [2, 4, 6],
+        ];
+
+        for (const combo of winCombinations) {
+          const [a, b, c] = combo;
+          if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+            return board[a];
+          }
+        }
+
+        if (!board.includes("")) {
+          return "Draw";
+        }
+
+        return null;
+      }
+
+      // Check if a move is a winning move for the player
+      function isWinningMove(board, player, move) {
+        const tempBoard = board.slice();
+        tempBoard[move] = player;
+        const winner = evaluateBoard(tempBoard);
+        return winner === player;
+      }
+
+      // Check if a move blocks the opponent's winning move
+      function isBlockingMove(board, player, move) {
+        const opponent = player === "X" ? "O" : "X";
+        return isWinningMove(board, opponent, move);
+      }
+
+      // Minimax algorithm with randomness for equal scores
+      function minimax(newBoard, player, depth = 0) {
+        const opponent = player === "X" ? "O" : "X";
+        const winner = evaluateBoard(newBoard);
+
+        if (winner === player) return { score: 10 - depth, index: null };
+        if (winner === opponent) return { score: depth - 10, index: null };
+        if (winner === "Draw") return { score: 0, index: null };
+
+        const moves = [];
+
+        for (let i = 0; i < newBoard.length; i++) {
+          if (newBoard[i] === "") {
+            const move = {};
+            move.index = i;
+            newBoard[i] = player;
+
+            const result = minimax(newBoard, opponent, depth + 1);
+            move.score = result.score;
+
+            newBoard[i] = "";
+            moves.push(move);
+          }
+        }
+
+        let bestMove;
+        if (player === "X") {
+          let bestScore = -Infinity;
+          const bestMoves = [];
+          for (let i = 0; i < moves.length; i++) {
+            if (moves[i].score > bestScore) {
+              bestScore = moves[i].score;
+              bestMoves.length = 0; // Clear the array
+              bestMoves.push(moves[i]);
+            } else if (moves[i].score === bestScore) {
+              bestMoves.push(moves[i]);
+            }
+          }
+          // Introduce randomness among equally scoring moves
+          bestMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+        } else {
+          let bestScore = Infinity;
+          const bestMoves = [];
+          for (let i = 0; i < moves.length; i++) {
+            if (moves[i].score < bestScore) {
+              bestScore = moves[i].score;
+              bestMoves.length = 0; // Clear the array
+              bestMoves.push(moves[i]);
+            } else if (moves[i].score === bestScore) {
+              bestMoves.push(moves[i]);
+            }
+          }
+          // Introduce randomness among equally scoring moves
+          bestMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+        }
+
+        return bestMove;
+      }
+
+      // AI Move Functions
+      async function aiMove() {
+        if (!gameActive) return;
+
+        const strategy = strategySelect.value;
+        const player = currentPlayer;
+
+        if (strategy === "cot") {
+          // Since CoT textbox is removed, we won't display messages
+          // Calculate move using Minimax
+          const move = await getAIMoveCot(board.slice(), player);
+
+          if (move !== null && typeof move === "number") {
+            // Apply the move
+            makeMove(move, player);
+          } else {
+            // No move to make, possibly game over
+            console.log(`No valid moves available for player ${player}.`);
+          }
+        } else if (strategy === "minimal") {
+          // Minimal AI: Random move
+          const move = getAIMoveMinimal(board.slice());
+          makeMove(move, player);
+        } else if (strategy === "explicit") {
+          // Explicit AI: Center > Corners > Edges with randomness
+          const move = getAIMoveExplicit(board.slice());
+          makeMove(move, player);
+        }
+      }
+
+      // CoT AI Move with brief reasoning
+      function getAIMoveCot(board, player) {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            const result = minimax(board, player);
+            const move = result.index;
+
+            if (move !== null && typeof move === "number") {
+              // Generate brief reasoning (omitted since CoT is removed)
+              // cotDiv.innerHTML = `<strong>Chain of Thought for ${player}:</strong><br><ul>${cotMessages
+              //   .map((msg) => `<li>${msg}</li>`)
+              //   .join("")}</ul>`;
+              resolve(move);
+            } else {
+              // No move to make (game over)
+              // cotDiv.innerHTML = `<strong>Chain of Thought for ${player}:</strong><br><p>No moves available.</p>`;
+              resolve(null);
+            }
+          }, 100); // Short delay for "Thinking..."
+        });
+      }
+
+      // Minimal AI: Random move
+      function getAIMoveMinimal(board) {
+        const available = board
+          .map((val, idx) => (val === "" ? idx : null))
+          .filter((val) => val !== null);
+        if (available.length === 0) return null; // No moves available
+        const randomIndex = Math.floor(Math.random() * available.length);
+        return available[randomIndex];
+      }
+
+      // Explicit AI: Center > Corners > Edges with randomness
+      function getAIMoveExplicit(board) {
+        if (board[4] === "") return 4; // Center
+
+        const corners = [0, 2, 6, 8].filter((idx) => board[idx] === "");
+        if (corners.length > 0) {
+          return corners[Math.floor(Math.random() * corners.length)];
+        }
+
+        const edges = [1, 3, 5, 7].filter((idx) => board[idx] === "");
+        if (edges.length > 0) {
+          return edges[Math.floor(Math.random() * edges.length)];
+        }
+
+        return null;
+      }
+
+      // Make a move on the board
+      function makeMove(index, player) {
+        console.log(
+          `Player ${player} is making a move at position ${index + 1}`
+        );
+
+        if (board[index] !== "" || !gameActive) {
+          console.error(
+            `Invalid move attempted by player ${player} at index ${index}`
+          );
+          return;
+        }
+
+        board[index] = player;
+        updateBoard();
+        highlightMove(index);
+
+        // Log move to history
+        addMoveToHistory(player, index);
+
+        // Check for a winner
+        const result = checkWinner();
+        if (result) {
           gameActive = false;
-          setTimeout(resetBoard, 1000); // Reset the board after 1 second
+          if (result === "Draw") {
+            scoreDraw++;
+            scoreDrawSpan.textContent = scoreDraw;
+            alert("It's a draw!");
+          } else {
+            if (result === "X") {
+              scoreX++;
+              scoreXSpan.textContent = scoreX;
+              alert(`AI (X) wins!`);
+            } else {
+              scoreO++;
+              scoreOSpan.textContent = scoreO;
+              alert(`AI (O) wins!`);
+            }
+          }
+
+          // Enable the Start Game button for replay
+          startButton.style.display = "inline-block";
+          startButton.disabled = false;
+          startButton.textContent = "Start Game";
+          console.log(`Game over. Winner: ${result}`);
+          return;
         }
+
+        // Switch player
+        currentPlayer = currentPlayer === "X" ? "O" : "X";
+        console.log(`Switching player to: ${currentPlayer}`);
+
+        // Trigger the next AI move
+        setTimeout(aiMove, 500);
       }
 
+      // Reset the board for a new game
       function resetBoard() {
-        currentPlayer = "X"; // AI 1 always starts
         board = ["", "", "", "", "", "", "", "", ""];
+        currentPlayer = "X"; // AI X starts
+        updateBoard();
+        // Removed CoT textbox reset
         gameActive = true;
-        document
-          .querySelectorAll(".tictactoe-cell")
-          .forEach((cell) => (cell.innerText = ""));
-        aiMove(); // Start the next round automatically without delay
+        startButton.disabled = true;
+        startButton.textContent = "Game in Progress...";
+        moveHistoryList.innerHTML = ""; // Clear move history
+        aiMove();
       }
 
-      function createBoard() {
-        const boardContainer = document.getElementById("tictactoe-board");
-        boardContainer.innerHTML = "";
-        for (let i = 0; i < 9; i++) {
-          const cell = document.createElement("div");
-          cell.classList.add("tictactoe-cell");
-          cell.setAttribute("data-cell-index", i);
-          boardContainer.appendChild(cell);
-        }
-      }
+      // Start game button event listener
+      startButton.addEventListener("click", () => {
+        resetBoard();
+      });
 
-      createBoard();
-      aiMove(); // Start the first move
+      // Generate the board on page load
+      generateBoard();
+
+      // Move History Implementation (Optional)
+      function addMoveToHistory(player, index) {
+        const moveNumber = moveHistoryList.children.length + 1;
+        const moveItem = document.createElement("li");
+        moveItem.innerText = `Player ${player} placed at position ${index + 1}`;
+        moveHistoryList.appendChild(moveItem);
+      }
     </script>
   </body>
 </html>

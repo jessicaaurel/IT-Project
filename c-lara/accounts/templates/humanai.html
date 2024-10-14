@@ -6,32 +6,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Human vs AI TicTacToe</title>
     <style>
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
+      /* Basic Reset */
+      * {
+        box-sizing: border-box;
         margin: 0;
+        padding: 0;
+      }
+
+      body {
         font-family: Arial, sans-serif;
+        background-color: #ffffff; /* Background color set to white */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start; /* Start from the top */
+        height: 100vh;
+        padding: 20px;
         position: relative;
       }
 
       h1 {
-        position: absolute;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 2em;
+        margin-bottom: 20px;
         text-align: center;
-        margin: 0;
+        font-size: 2em;
       }
 
-      .tictactoe-container {
+      /* Back Button Styling */
+      .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        font-size: 16px;
+        padding: 10px 20px;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+
+      .back-button:hover {
+        background-color: #ddd;
+      }
+
+      /* Controls Styling */
+      .controls {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .controls label {
+        margin-right: 10px;
+        font-weight: bold;
+        font-size: 1em;
+      }
+
+      .controls select {
+        padding: 5px;
+        font-size: 1em;
+        margin-right: 10px;
+      }
+
+      .start-button {
+        padding: 10px 20px;
+        font-size: 1em;
+        background-color: #007bff; /* Blue background */
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .start-button:hover:not([disabled]) {
+        background-color: #0056b3;
+      }
+
+      .start-button:disabled {
+        background-color: #a5d6a7;
+        cursor: not-allowed;
+      }
+
+      /* Flex container for Board */
+      .game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        width: 100%;
+        max-width: 800px;
+      }
+
+      /* Board and Scoreboard Styling */
+      .board-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .board {
         display: grid;
         grid-template-columns: repeat(3, 150px);
         grid-template-rows: repeat(3, 150px);
         gap: 10px;
-        margin-top: 50px;
       }
 
       .tictactoe-cell {
@@ -44,121 +122,229 @@
         font-size: 4em;
         cursor: pointer;
         border: 2px solid black;
+        border-radius: 8px;
+        transition: background-color 0.3s, transform 0.3s;
       }
 
-      .options-container {
-        position: absolute;
-        top: 50%;
-        right: 20px;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
+      .tictactoe-cell:hover {
+        background-color: #e0e0e0;
+        transform: scale(1.05);
       }
 
-      button {
-        font-size: 18px;
-        padding: 10px;
-        margin: 15px;
-        width: 150px;
-        cursor: pointer;
+      .tictactoe-cell.disabled {
+        cursor: not-allowed;
+        background-color: #d0d0d0;
       }
 
-      .ai-selected {
-        position: absolute;
-        top: 100px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 1.5em;
-        color: #333;
-      }
-
-      .counter {
-        position: absolute;
-        top: 150px;
-        left: 50%;
-        transform: translateX(-50%);
+      .scoreboard {
         font-size: 1.2em;
         color: #333;
       }
 
-      /* Back button styling */
-      .back-button {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        font-size: 16px;
-        padding: 10px 20px;
-        background-color: #f0f0f0;
-        border: 1px solid #ccc;
-        cursor: pointer;
+      /* AI Selected Styling */
+      .ai-selected {
+        margin-bottom: 20px;
+        font-size: 1.2em;
+        color: #333;
       }
 
-      .back-button:hover {
-        background-color: #ddd;
+      /* Responsive Design */
+      @media (max-width: 900px) {
+        .board {
+          grid-template-columns: repeat(3, 120px);
+          grid-template-rows: repeat(3, 120px);
+        }
+
+        .tictactoe-cell {
+          width: 120px;
+          height: 120px;
+          font-size: 3em;
+        }
+
+        .scoreboard {
+          font-size: 1em;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .controls select {
+          width: 100%;
+          margin-bottom: 10px;
+        }
+
+        .start-button {
+          width: 100%;
+        }
+
+        .board {
+          grid-template-columns: repeat(3, 100px);
+          grid-template-rows: repeat(3, 100px);
+        }
+
+        .tictactoe-cell {
+          width: 100px;
+          height: 100px;
+          font-size: 2.5em;
+        }
+      }
+
+      /* Highlight class for AI moves */
+      .highlight {
+        background-color: yellow;
+        transform: scale(1.1);
       }
     </style>
   </head>
   <body>
-    <div class="content">
-      <h1>TicTacToe: Human vs AI</h1>
-      <div class="ai-selected">Selected AI: {{ ai_model }}</div>
-      <!-- Display selected AI -->
+    <!-- Back Button -->
+    <button class="back-button" onclick="window.location.href='/game/'">
+      Back
+    </button>
 
-      <!-- W-L-D Counters -->
-      <div class="counter">
-        Wins: <span id="wins">0</span> | Losses: <span id="losses">0</span> |
-        Draws: <span id="draws">0</span>
+    <!-- Title -->
+    <h1>TicTacToe: Human vs AI</h1>
+
+    <!-- AI Selection Display -->
+    <div class="ai-selected">Selected AI: {{ ai_model }}</div>
+
+    <!-- Controls: AI Strategy Selection and Start Game Button -->
+    <div class="controls">
+      <label for="strategy">Select AI Strategy:</label>
+      <select id="strategy">
+        <option value="cot">Chain of Thought (CoT)</option>
+        <option value="minimal">Minimal</option>
+        <option value="explicit">Explicit</option>
+      </select>
+      <button id="start-button" class="start-button">Start Game</button>
+    </div>
+
+    <!-- Main Game Container: Board and Scoreboard -->
+    <div class="game-container">
+      <!-- Board and Scoreboard -->
+      <div class="board-container">
+        <div class="board" id="tictactoe-board">
+          <!-- Cells will be generated by JavaScript -->
+        </div>
+
+        <!-- W-L-D Counters -->
+        <div class="scoreboard">
+          <strong>Score:</strong> Wins: <span id="wins">0</span> | Losses:
+          <span id="losses">0</span> | Draws: <span id="draws">0</span>
+        </div>
       </div>
-
-      <div class="tictactoe-container" id="tictactoe-board">
-        <!-- Cells for the TicTacToe board will be generated by JavaScript -->
-      </div>
-
-      <!-- Back Button -->
-      <button class="back-button" onclick="window.location.href='/game/'">
-        Back
-      </button>
     </div>
 
     <script>
-      let currentPlayer = "X"; // Human player
-      let board = ["", "", "", "", "", "", "", "", ""];
-      let gameActive = true;
-
-      // W-L-D Counters
+      // Initialize scores
       let wins = 0;
       let losses = 0;
       let draws = 0;
 
+      // Game state variables
+      let board = ["", "", "", "", "", "", "", "", ""];
+      let gameActive = false;
+      let currentPlayer = "X"; // Human starts
+      let aiStrategy = "cot"; // Default strategy
+
+      // Reference to DOM elements
+      const strategySelect = document.getElementById("strategy");
+      const startButton = document.getElementById("start-button");
+      const boardDiv = document.getElementById("tictactoe-board");
+      const scoreXSpan = document.getElementById("wins");
+      const scoreOSpan = document.getElementById("losses");
+      const scoreDrawSpan = document.getElementById("draws");
+
+      // Generate the board
+      function createBoard() {
+        boardDiv.innerHTML = "";
+        for (let i = 0; i < 9; i++) {
+          const cell = document.createElement("div");
+          cell.classList.add("tictactoe-cell");
+          cell.setAttribute("data-cell-index", i);
+          cell.addEventListener("click", handleCellClick);
+          boardDiv.appendChild(cell);
+        }
+      }
+
+      // Handle Human Click
       function handleCellClick(event) {
-        const cellIndex = event.target.getAttribute("data-cell-index");
-        if (board[cellIndex] !== "" || !gameActive) {
+        if (!gameActive) return;
+
+        const cell = event.target;
+        const cellIndex = parseInt(cell.getAttribute("data-cell-index"));
+
+        if (board[cellIndex] !== "") {
           return;
         }
-        board[cellIndex] = currentPlayer;
-        event.target.innerText = currentPlayer;
+
+        makeMove(cellIndex, "X"); // Human move
         checkWinner();
+
         if (gameActive) {
-          currentPlayer = "O"; // AI's turn
+          currentPlayer = "O"; // Switch to AI
           aiMove();
         }
       }
 
-      function aiMove() {
-        // Basic AI - Random Move
-        const availableMoves = board
-          .map((val, index) => (val === "" ? index : null))
-          .filter((v) => v !== null);
-        const aiMove =
-          availableMoves[Math.floor(Math.random() * availableMoves.length)];
-        board[aiMove] = currentPlayer;
-        document.querySelector(`div[data-cell-index="${aiMove}"]`).innerText =
-          currentPlayer;
-        checkWinner();
-        currentPlayer = "X"; // Human's turn
+      // AI Move Functions
+      async function aiMove() {
+        if (!gameActive) return;
+
+        aiStrategy = strategySelect.value;
+
+        if (aiStrategy === "cot") {
+          // Since CoT textbox is removed, we won't display messages
+          // Calculate move using Minimax
+          const move = await getAIMoveCot(board.slice(), "O");
+
+          if (move !== null && typeof move === "number") {
+            makeMove(move, "O"); // AI move
+            checkWinner();
+            currentPlayer = "X"; // Switch back to Human
+          }
+        } else if (aiStrategy === "minimal") {
+          // Minimal AI: Random Move
+          const move = getAIMoveMinimal(board.slice());
+          makeMove(move, "O"); // AI move
+          checkWinner();
+          currentPlayer = "X"; // Switch back to Human
+        } else if (aiStrategy === "explicit") {
+          // Explicit AI: Center > Corners > Edges with randomness
+          const move = getAIMoveExplicit(board.slice());
+          makeMove(move, "O"); // AI move
+          checkWinner();
+          currentPlayer = "X"; // Switch back to Human
+        }
       }
 
+      // Make a move on the board
+      function makeMove(index, player) {
+        board[index] = player;
+        const cell = document.querySelector(
+          `.tictactoe-cell[data-cell-index="${index}"]`
+        );
+        cell.innerText = player;
+        cell.classList.add("disabled");
+
+        if (player === "O" && aiStrategy === "cot") {
+          highlightMove(index);
+        }
+
+        addMoveToHistory(player, index); // Log move
+      }
+
+      // Highlight the last move (for AI moves if CoT is selected)
+      function highlightMove(index) {
+        const cell = document.querySelector(
+          `.tictactoe-cell[data-cell-index="${index}"]`
+        );
+        cell.classList.add("highlight");
+        setTimeout(() => {
+          cell.classList.remove("highlight");
+        }, 500);
+      }
+
+      // Check for a winner
       function checkWinner() {
         const winningCombinations = [
           [0, 1, 2],
@@ -182,58 +368,214 @@
 
         if (roundWon) {
           if (currentPlayer === "X") {
-            wins++; // Player win
-            document.getElementById("wins").innerText = wins;
-            alert("You win!"); // Show result
+            wins++;
+            scoreXSpan.innerText = wins;
+            alert("You win!");
             saveResult("P1");
           } else {
-            losses++; // AI win
-            document.getElementById("losses").innerText = losses;
-            alert("AI wins!"); // Show result
+            losses++;
+            scoreOSpan.innerText = losses;
+            alert("AI wins!");
             saveResult("P2");
           }
           gameActive = false;
+          startButton.disabled = false; // Re-enable Start Game button
+          startButton.innerText = "Start Game";
           setTimeout(resetBoard, 1000); // Reset the board after 1 second
           return;
         }
 
         if (!board.includes("")) {
-          draws++; // Game draw
-          document.getElementById("draws").innerText = draws;
+          draws++;
+          scoreDrawSpan.innerText = draws;
           alert("It's a draw!");
           gameActive = false;
+          startButton.disabled = false; // Re-enable Start Game button
+          startButton.innerText = "Start Game";
           setTimeout(resetBoard, 1000); // Reset the board after 1 second
         }
       }
 
+      // Reset the board for a new game
       function resetBoard() {
-        currentPlayer = "X";
         board = ["", "", "", "", "", "", "", "", ""];
-        gameActive = true;
-        document
-          .querySelectorAll(".tictactoe-cell")
-          .forEach((cell) => (cell.innerText = ""));
+        gameActive = false; // Ensure game is inactive until started
+        currentPlayer = "X"; // Human starts
+        document.querySelectorAll(".tictactoe-cell").forEach((cell) => {
+          cell.innerText = "";
+          cell.classList.remove("disabled", "highlight");
+        });
+        moveHistoryList.innerHTML = ""; // Clear move history
       }
 
-      function createBoard() {
-        const boardContainer = document.getElementById("tictactoe-board");
-        boardContainer.innerHTML = "";
-        for (let i = 0; i < 9; i++) {
-          const cell = document.createElement("div");
-          cell.classList.add("tictactoe-cell");
-          cell.setAttribute("data-cell-index", i);
-          cell.addEventListener("click", handleCellClick);
-          boardContainer.appendChild(cell);
-        }
+      // Start Game Function
+      function startGame() {
+        resetBoard();
+        gameActive = true;
+        currentPlayer = "X"; // Human starts
+        startButton.disabled = true;
+        startButton.innerText = "Game in Progress...";
       }
-      
-      // MODIFICATION
+
+      // Add Event Listener to Start Button
+      startButton.addEventListener("click", startGame);
+
+      // AI Strategies Implementation
+
+      // Chain of Thought (CoT) AI Move with reasoning
+      function getAIMoveCot(board, player) {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            const result = minimax(board, player);
+            const move = result.index;
+
+            if (move !== null && typeof move === "number") {
+              // Since CoT textbox is removed, we won't display messages
+              resolve(move);
+            } else {
+              // No move to make (game over)
+              resolve(null);
+            }
+          }, 500); // Short delay for "Thinking..."
+        });
+      }
+
+      // Minimal AI: Random move
+      function getAIMoveMinimal(board) {
+        const available = board
+          .map((val, idx) => (val === "" ? idx : null))
+          .filter((v) => v !== null);
+        if (available.length === 0) return null; // No moves available
+        const randomIndex = Math.floor(Math.random() * available.length);
+        return available[randomIndex];
+      }
+
+      // Explicit AI: Center > Corners > Edges with randomness
+      function getAIMoveExplicit(board) {
+        if (board[4] === "") return 4; // Center
+
+        const corners = [0, 2, 6, 8].filter((idx) => board[idx] === "");
+        if (corners.length > 0) {
+          return corners[Math.floor(Math.random() * corners.length)];
+        }
+
+        const edges = [1, 3, 5, 7].filter((idx) => board[idx] === "");
+        if (edges.length > 0) {
+          return edges[Math.floor(Math.random() * edges.length)];
+        }
+
+        return null;
+      }
+
+      // Check if a move is a winning move for the player
+      function isWinningMove(board, player, move) {
+        const tempBoard = board.slice();
+        tempBoard[move] = player;
+        const winner = evaluateBoard(tempBoard);
+        return winner === player;
+      }
+
+      // Check if a move blocks the opponent's winning move
+      function isBlockingMove(board, player, move) {
+        const opponent = player === "X" ? "O" : "X";
+        return isWinningMove(board, opponent, move);
+      }
+
+      // Evaluate board to determine the winner
+      function evaluateBoard(board) {
+        const winCombinations = [
+          [0, 1, 2],
+          [3, 4, 5],
+          [6, 7, 8],
+          [0, 3, 6],
+          [1, 4, 7],
+          [2, 5, 8],
+          [0, 4, 8],
+          [2, 4, 6],
+        ];
+
+        for (const combo of winCombinations) {
+          const [a, b, c] = combo;
+          if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+            return board[a];
+          }
+        }
+
+        if (!board.includes("")) {
+          return "Draw";
+        }
+
+        return null;
+      }
+
+      // Minimax algorithm with randomness for equal scores
+      function minimax(newBoard, player, depth = 0) {
+        const opponent = player === "X" ? "O" : "X";
+        const winner = evaluateBoard(newBoard);
+
+        if (winner === player) return { score: 10 - depth, index: null };
+        if (winner === opponent) return { score: depth - 10, index: null };
+        if (winner === "Draw") return { score: 0, index: null };
+
+        const moves = [];
+
+        for (let i = 0; i < newBoard.length; i++) {
+          if (newBoard[i] === "") {
+            const move = {};
+            move.index = i;
+            newBoard[i] = player;
+
+            const result = minimax(newBoard, opponent, depth + 1);
+            move.score = result.score;
+
+            newBoard[i] = "";
+            moves.push(move);
+          }
+        }
+
+        let bestMove;
+        if (player === "O") {
+          // AI is the minimizing player
+          let bestScore = Infinity;
+          const bestMoves = [];
+          for (let i = 0; i < moves.length; i++) {
+            if (moves[i].score < bestScore) {
+              bestScore = moves[i].score;
+              bestMoves.length = 0; // Clear the array
+              bestMoves.push(moves[i]);
+            } else if (moves[i].score === bestScore) {
+              bestMoves.push(moves[i]);
+            }
+          }
+          // Introduce randomness among equally scoring moves
+          bestMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+        } else {
+          // Human is the maximizing player
+          let bestScore = -Infinity;
+          const bestMoves = [];
+          for (let i = 0; i < moves.length; i++) {
+            if (moves[i].score > bestScore) {
+              bestScore = moves[i].score;
+              bestMoves.length = 0; // Clear the array
+              bestMoves.push(moves[i]);
+            } else if (moves[i].score === bestScore) {
+              bestMoves.push(moves[i]);
+            }
+          }
+          // Introduce randomness among equally scoring moves
+          bestMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+        }
+
+        return bestMove;
+      }
+
+      // Save Game Result to Server
       function saveResult(outcome) {
-        const csrfToken = '{{ csrf_token }}';
+        const csrfToken = "{{ csrf_token }}";
 
         const data = {
-          outcome: outcome, 
-          csrfmiddlewaretoken: csrfToken
+          outcome: outcome,
+          csrfmiddlewaretoken: csrfToken,
         };
 
         fetch("{% url 'human_vs_ai' ai_model %}", {
@@ -243,15 +585,34 @@
           },
           body: JSON.stringify(data),
         })
-        .then(response => response.json())
-        .then(data => {
-          console.log("Game result saved", data);
-        })
-        .catch((error) => {
-          console.error("Error when saving result", error);
-        });
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Game result saved", data);
+          })
+          .catch((error) => {
+            console.error("Error when saving result", error);
+          });
       }
 
+      // Move History Implementation (Optional)
+      const moveHistoryList = document.createElement("ul");
+      moveHistoryList.id = "move-history-list";
+      const moveHistoryContainer = document.createElement("div");
+      moveHistoryContainer.classList.add("move-history");
+      moveHistoryContainer.innerHTML = "<strong>Move History:</strong>";
+      moveHistoryContainer.appendChild(moveHistoryList);
+      document
+        .querySelector(".board-container")
+        .appendChild(moveHistoryContainer);
+
+      function addMoveToHistory(player, index) {
+        const moveNumber = moveHistoryList.children.length + 1;
+        const moveItem = document.createElement("li");
+        moveItem.innerText = `Player ${player} placed at position ${index + 1}`;
+        moveHistoryList.appendChild(moveItem);
+      }
+
+      // Initialize the board on page load
       createBoard();
     </script>
   </body>
