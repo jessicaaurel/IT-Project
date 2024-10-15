@@ -17,11 +17,7 @@ class GameResult(models.Model):
 
     def __str__(self):
 
-        print("MODEL 1: " + self.ai_model1)
-        print("MODEL 2: " + self.ai_model2)
-
         if (self.ai_model1 and self.ai_model2):
-            print("MODEL SUCCESS")
             return f"Match between {self.ai_model1} and {self.ai_model2} on {self.game_date}"
         return f"Match between {self.player_one.username} and AI model {self.ai_model2} on {self.game_date}"
         
