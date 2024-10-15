@@ -168,11 +168,22 @@
                     <tr>
                         <td>{{ result.game_date }}</td>
                         <td>
-                            {{ result.player_one.username }} vs 
-                            {% if result.player_two %}
-                                {{ result.player_two.username }}
+                            {% if result.player_one %}
+                                {{ result.player_one.username }}
+                                vs 
+                                {% if result.player_two %}
+                                    {{ result.player_two.username }}
+                                {% else %}
+                                    {{ result.ai_model2 }} 
+                                {% endif %}
                             {% else %}
-                                {{ result.ai_model }} 
+                                {{ result.ai_model1 }} 
+                                vs 
+                                {% if result.player_two %}
+                                    {{ result.player_two.username }}
+                                {% else %}
+                                    {{ result.ai_model2 }} 
+                                {% endif %}
                             {% endif %}
                         </td>
                         <td>
@@ -186,7 +197,7 @@
                         </td>
                     </tr>
                     {% endfor %}
-                </tbody>
+                </tbody>                
             </table>
         </div>
     </div>

@@ -546,10 +546,12 @@
               scoreX++;
               scoreXSpan.textContent = scoreX;
               alert(`AI (X) wins!`);
+              saveResult("P1");
             } else {
               scoreO++;
               scoreOSpan.textContent = scoreO;
               alert(`AI (O) wins!`);
+              saveResult("P2");
             }
           }
 
@@ -589,6 +591,31 @@
 
       // Generate the board on page load
       generateBoard();
+
+      // Save Game Result to Server
+      function saveResult(outcome) {
+        const csrfToken = "{{ csrf_token }}";
+
+        const data = {
+          outcome: outcome,
+          csrfmiddlewaretoken: csrfToken,
+        };
+
+        fetch("{% url 'ai_vs_ai' ai1_model ai2_model %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Game result saved", data);
+          })
+          .catch((error) => {
+            console.error("Error when saving result", error);
+          });
+      }
 
       // Move History Implementation (Optional)
       function addMoveToHistory(player, index) {

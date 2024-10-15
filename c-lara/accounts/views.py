@@ -133,7 +133,7 @@ def human_vs_ai_view(request, ai_model):
 
         game_result = GameResult.objects.create(
             player_one=request.user,
-            ai_model=ai_model,
+            ai_model2=ai_model,
             outcome=gameOutcome
         )
         print(f"Saved game result: {game_result}")
@@ -156,6 +156,7 @@ async def ai_vs_ai_game(ai1, ai2):
     return log
 
 # View for AI vs AI
+@csrf_exempt
 def ai_vs_ai_view(request, ai1_model, ai2_model):
     if request.method == "GET":
         return render(request, 'aivsai.html', {'ai1_model': ai1_model, 'ai2_model': ai2_model})
@@ -164,21 +165,27 @@ def ai_vs_ai_view(request, ai1_model, ai2_model):
         # Simulate AI vs AI game
         ai1 = ai1_model  # First AI model (e.g., 'gemini')
         ai2 = ai2_model  # Second AI model (e.g., 'claude')
+
+        # Requests and reads the outcome of the game
+        data = json.loads(request.body)
+        gameOutcome = data.get('outcome')
         
         # Run the game asynchronously
+        # TODO: Temporary fix
+        '''
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         log = loop.run_until_complete(ai_vs_ai_game(ai1, ai2))
-        
-        # Optionally, store the result in the GameResult model
-        GameResult.objects.create(
-            player_one=User.objects.get(username=ai1),  # Replace with appropriate AI user lookup logic
-            player_two=User.objects.get(username=ai2),
-            outcome=log['outcome']  # Ensure log contains an 'outcome' key (e.g., 'P1', 'P2', 'draw')
+        '''
+        game_result = GameResult.objects.create(
+            ai_model1=ai1,
+            ai_model2=ai2,
+            outcome=gameOutcome 
         )
+        print(f"Saved game result: {game_result}")
 
         # Return the game log as a JSON response
-        return JsonResponse(log, safe=False)
+        return JsonResponse({'message': 'Success'}, status=200)
 
 @csrf_exempt
 def store_game_result(request):

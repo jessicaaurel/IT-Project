@@ -8,13 +8,20 @@ class GameResult(models.Model):
         ('draw', 'Draw'),
     ]
     
-    player_one = models.ForeignKey(User, related_name='games_as_player_one', on_delete=models.CASCADE)
+    player_one = models.ForeignKey(User, related_name='games_as_player_one', on_delete=models.CASCADE, null=True, blank=True)
     player_two = models.ForeignKey(User, related_name='games_as_player_two', on_delete=models.CASCADE, null=True, blank=True)
-    ai_model = models.CharField(max_length=100, null=True, blank=True)  # Add AI model field
+    ai_model1 = models.CharField(max_length=100, null=True, blank=True)
+    ai_model2 = models.CharField(max_length=100, null=True, blank=True)
     outcome = models.CharField(max_length=4, choices=OUTCOME_CHOICES)
     game_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        if self.ai_model:
-            return f"Match between {self.player_one.username} and AI model {self.ai_model} on {self.game_date}"
-        return f"Match between {self.player_one.username} and {self.player_two.username} on {self.game_date}"
+
+        print("MODEL 1: " + self.ai_model1)
+        print("MODEL 2: " + self.ai_model2)
+
+        if (self.ai_model1 and self.ai_model2):
+            print("MODEL SUCCESS")
+            return f"Match between {self.ai_model1} and {self.ai_model2} on {self.game_date}"
+        return f"Match between {self.player_one.username} and AI model {self.ai_model2} on {self.game_date}"
+        
