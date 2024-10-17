@@ -239,7 +239,7 @@
         </div>
 
         <div class="scoreboard">
-          <strong>Score:</strong> AI (X): <span id="score-x">0</span> | AI (O):
+          <strong>Score:</strong> X: <span id="score-x">0</span> | O:
           <span id="score-o">0</span> | Draws: <span id="score-draw">0</span>
         </div>
 
@@ -545,13 +545,11 @@
             if (result === "X") {
               scoreX++;
               scoreXSpan.textContent = scoreX;
-              alert(`AI (X) wins!`);
-              saveResult("P1");
+              alert(`X wins!`);
             } else {
               scoreO++;
               scoreOSpan.textContent = scoreO;
-              alert(`AI (O) wins!`);
-              saveResult("P2");
+              alert(`O wins!`);
             }
           }
 
@@ -591,31 +589,6 @@
 
       // Generate the board on page load
       generateBoard();
-
-      // Save Game Result to Server
-      function saveResult(outcome) {
-        const csrfToken = "{{ csrf_token }}";
-
-        const data = {
-          outcome: outcome,
-          csrfmiddlewaretoken: csrfToken,
-        };
-
-        fetch("{% url 'ai_vs_ai' ai1_model ai2_model %}", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Game result saved", data);
-          })
-          .catch((error) => {
-            console.error("Error when saving result", error);
-          });
-      }
 
       // Move History Implementation (Optional)
       function addMoveToHistory(player, index) {

@@ -190,8 +190,40 @@
 
       /* Highlight class for AI moves */
       .highlight {
-        background-color: yellow;
-        transform: scale(1.1);
+        background-color: yellow !important;
+        animation: highlightAnimation 0.5s forwards;
+      }
+
+      @keyframes highlightAnimation {
+        0% {
+          background-color: #f0f0f0;
+          transform: scale(1);
+        }
+        50% {
+          background-color: yellow;
+          transform: scale(1.1);
+        }
+        100% {
+          background-color: #f0f0f0;
+          transform: scale(1);
+        }
+      }
+
+      /* Move History Styling */
+      .move-history {
+        margin-top: 20px;
+        width: 300px;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: #fafafa;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      .move-history ul {
+        list-style-type: decimal;
+        padding-left: 20px;
       }
     </style>
   </head>
@@ -231,6 +263,14 @@
           <strong>Score:</strong> Wins: <span id="wins">0</span> | Losses:
           <span id="losses">0</span> | Draws: <span id="draws">0</span>
         </div>
+
+        <!-- Move History (Optional) -->
+        <div class="move-history">
+          <strong>Move History:</strong>
+          <ul id="move-history-list">
+            <!-- Move history will be appended here -->
+          </ul>
+        </div>
       </div>
     </div>
 
@@ -253,6 +293,7 @@
       const scoreXSpan = document.getElementById("wins");
       const scoreOSpan = document.getElementById("losses");
       const scoreDrawSpan = document.getElementById("draws");
+      const moveHistoryList = document.getElementById("move-history-list");
 
       // Generate the board
       function createBoard() {
@@ -293,8 +334,7 @@
         aiStrategy = strategySelect.value;
 
         if (aiStrategy === "cot") {
-          // Since CoT textbox is removed, we won't display messages
-          // Calculate move using Minimax
+          // Chain of Thought AI: Minimax with highlight
           const move = await getAIMoveCot(board.slice(), "O");
 
           if (move !== null && typeof move === "number") {
@@ -303,17 +343,21 @@
             currentPlayer = "X"; // Switch back to Human
           }
         } else if (aiStrategy === "minimal") {
-          // Minimal AI: Random Move
+          // Minimal AI: Random Move with highlight
           const move = getAIMoveMinimal(board.slice());
-          makeMove(move, "O"); // AI move
-          checkWinner();
-          currentPlayer = "X"; // Switch back to Human
+          if (move !== null) {
+            makeMove(move, "O"); // AI move
+            checkWinner();
+            currentPlayer = "X"; // Switch back to Human
+          }
         } else if (aiStrategy === "explicit") {
-          // Explicit AI: Center > Corners > Edges with randomness
+          // Explicit AI: Center > Corners > Edges with randomness and highlight
           const move = getAIMoveExplicit(board.slice());
-          makeMove(move, "O"); // AI move
-          checkWinner();
-          currentPlayer = "X"; // Switch back to Human
+          if (move !== null) {
+            makeMove(move, "O"); // AI move
+            checkWinner();
+            currentPlayer = "X"; // Switch back to Human
+          }
         }
       }
 
@@ -326,22 +370,24 @@
         cell.innerText = player;
         cell.classList.add("disabled");
 
-        if (player === "O" && aiStrategy === "cot") {
+        // Highlight AI moves regardless of strategy
+        if (player === "O") {
           highlightMove(index);
         }
 
         addMoveToHistory(player, index); // Log move
       }
 
-      // Highlight the last move (for AI moves if CoT is selected)
+      // Highlight the last move
       function highlightMove(index) {
         const cell = document.querySelector(
           `.tictactoe-cell[data-cell-index="${index}"]`
         );
         cell.classList.add("highlight");
+        // Remove highlight after animation completes
         setTimeout(() => {
           cell.classList.remove("highlight");
-        }, 500);
+        }, 500); // Match animation duration
       }
 
       // Check for a winner
@@ -358,10 +404,13 @@
         ];
 
         let roundWon = false;
+        let winningCombo = [];
+
         for (let i = 0; i < winningCombinations.length; i++) {
           const [a, b, c] = winningCombinations[i];
           if (board[a] && board[a] === board[b] && board[a] === board[c]) {
             roundWon = true;
+            winningCombo = [a, b, c];
             break;
           }
         }
@@ -381,7 +430,12 @@
           gameActive = false;
           startButton.disabled = false; // Re-enable Start Game button
           startButton.innerText = "Start Game";
-          setTimeout(resetBoard, 1000); // Reset the board after 1 second
+
+          // Highlight the winning combination
+          highlightWinningCombo(winningCombo);
+
+          // Reset the board after a short delay to allow users to see the winning highlight
+          setTimeout(resetBoard, 1500); // Reset the board after 1.5 seconds
           return;
         }
 
@@ -392,8 +446,28 @@
           gameActive = false;
           startButton.disabled = false; // Re-enable Start Game button
           startButton.innerText = "Start Game";
-          setTimeout(resetBoard, 1000); // Reset the board after 1 second
+          setTimeout(resetBoard, 1500); // Reset the board after 1.5 seconds
         }
+      }
+
+      // Highlight the winning combination
+      function highlightWinningCombo(combo) {
+        combo.forEach((index) => {
+          const cell = document.querySelector(
+            `.tictactoe-cell[data-cell-index="${index}"]`
+          );
+          cell.classList.add("highlight");
+        });
+
+        // Remove highlight after animation completes
+        setTimeout(() => {
+          combo.forEach((index) => {
+            const cell = document.querySelector(
+              `.tictactoe-cell[data-cell-index="${index}"]`
+            );
+            cell.classList.remove("highlight");
+          });
+        }, 1500); // Match the reset delay
       }
 
       // Reset the board for a new game
@@ -594,17 +668,7 @@
           });
       }
 
-      // Move History Implementation (Optional)
-      const moveHistoryList = document.createElement("ul");
-      moveHistoryList.id = "move-history-list";
-      const moveHistoryContainer = document.createElement("div");
-      moveHistoryContainer.classList.add("move-history");
-      moveHistoryContainer.innerHTML = "<strong>Move History:</strong>";
-      moveHistoryContainer.appendChild(moveHistoryList);
-      document
-        .querySelector(".board-container")
-        .appendChild(moveHistoryContainer);
-
+      // Add Move to History
       function addMoveToHistory(player, index) {
         const moveNumber = moveHistoryList.children.length + 1;
         const moveItem = document.createElement("li");
