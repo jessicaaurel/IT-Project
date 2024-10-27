@@ -18,8 +18,6 @@ pip install -r requirements.txt
 
 In the run.py file, ensure that the working directory is set correctly. You may need to adjust the path based on your local setup:
 
-# Change the directory
-
 os.chdir('/Users/revelino/Documents/GitHub/IT-Project/C-LARA/')
 
 ### 4. Run the server
