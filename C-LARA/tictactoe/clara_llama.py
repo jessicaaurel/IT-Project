@@ -13,7 +13,7 @@ async def get_api_llama_response(formatted_request, callback=None):
     try:
         api_key = get_llama_api_key()  # Get the API key
         headers = {
-            'Authorization': f'Bearer {LA-ceabc6209fc749978a6bac29f6f39145b5377b3b6f254c6e97c34bfe95ddf7de}',
+            'Authorization': f'Bearer {api_key}',
             'Content-Type': 'application/json'
         }
         data = {

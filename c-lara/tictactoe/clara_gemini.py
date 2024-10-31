@@ -1,9 +1,16 @@
 import requests
 
-def request_gemini_move(board, player):
+def get_gemini_api_key():
+    api_key = os.environ.get('GEMINI_API_KEY')
+    if not api_key:
+        raise ValueError("API key for Gemini not found. Please set the 'GEMINI_API_KEY' environment variable.")
+    return api_key
+
+async def request_gemini_move(board, player):
     """Sends the Tic-Tac-Toe board to Gemini and gets the move recommendation."""
     api_url = 'https://api.gemini.com/move'
-    headers = {'Authorization': 'Bearer AIzaSyCwqNRnvF2uOBiZLZi_Iaozam8TxGYBNDc'}  # Replace YOUR_API_KEY with your actual key
+    api_key = get_gemini_api_key()
+    headers = {'Authorization': f'Bearer {api_key}'}  # Replace YOUR_API_KEY with your actual key
     payload = {
         'board': board,
         'player': player
